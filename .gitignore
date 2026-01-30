@@ -21,3 +21,6 @@ android/unityLibrary/.gradle/
 .idea/
 .vscode/
 *.log
+
+android/unityLibrary/src/main/jniLibs/
+android/unityLibrary/symbols/
