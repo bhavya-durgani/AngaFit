@@ -1,0 +1,23 @@
+# Flutter
+.dart_tool/
+.pub/
+.pub-cache/
+build/
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+
+# iOS
+ios/Pods/
+ios/build/
+
+# Unity
+android/unityLibrary/build/
+android/unityLibrary/.gradle/
+
+# IDE
+.idea/
+.vscode/
+*.log
