@@ -1,4 +1,4 @@
-# angafit
+# AngaFit
 
 A new Flutter project.
 
