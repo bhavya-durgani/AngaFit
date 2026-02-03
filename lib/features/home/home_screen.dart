@@ -1,47 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../../core/constants/app_colors.dart';
+import '../../data/dummy_data.dart';
+import '../product_details/product_details_screen.dart';
+import 'widgets/product_card.dart';
 
 class HomeScreen extends StatelessWidget {
-  static const List<String> categories = ["Men", "Women", "Kids"];
-
-  const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: categories.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("AR STYLE HUB", style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-          bottom: TabBar(
-            indicatorColor: Colors.black,
-            labelColor: Colors.black,
-            tabs: categories.map((cat) => Tab(text: cat)).toList(),
-          ),
-          actions: [
-            IconButton(icon: const Icon(Icons.filter_list), onPressed: () => _showFilter(context)),
-          ],
-        ),
-        body: TabBarView(
-          children: categories.map((cat) => Center(child: Text("$cat Collection coming soon"))).toList(),
-        ),
-      ),
-    );
-  }
-
-  void _showFilter(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
+    return Scaffold(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Filters", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            // ignore: deprecated_member_use
-            ListTile(title: const Text("Price: Low to High"), leading: Radio(value: 1, groupValue: 1, onChanged: (v){})),
-            const ListTile(title: Text("Size: M, L, XL"), leading: Icon(Icons.check_box_outline_blank)),
-            ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text("Apply"))
+            // Immersive Top Banner
+            Stack(
+              children: [
+                Image.network(
+                  'https://images.unsplash.com/photo-1445205170230-053b830c6050',
+                  height: 550, width: double.infinity, fit: BoxFit.cover,
+                ),
+                Container(height: 550, width: double.infinity, color: Colors.black26),
+                Positioned(
+                  bottom: 40, left: 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Fashion\nsale", style: TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.w900, height: 1)),
+                      const SizedBox(height: 15),
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryRed, padding: const EdgeInsets.symmetric(horizontal: 30)),
+                        child: const Text("Check out"),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+
+            // New Arrivals Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("New", style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold)),
+                      Text("You've never seen it before!", style: TextStyle(color: AppColors.grey, fontSize: 11)),
+                    ],
+                  ),
+                  TextButton(onPressed: () {}, child: const Text("View all", style: TextStyle(color: Colors.black))),
+                ],
+              ),
+            ),
+
+            // Product Grid
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, childAspectRatio: 0.6, crossAxisSpacing: 15, mainAxisSpacing: 15,
+              ),
+              itemCount: appProducts.length,
+              itemBuilder: (context, index) {
+                return ProductCard(
+                  product: appProducts[index],
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen())),
+                );
+              },
+            ),
+            const SizedBox(height: 30),
           ],
         ),
       ),

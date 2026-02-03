@@ -24,3 +24,5 @@ android/unityLibrary/.gradle/
 
 android/unityLibrary/src/main/jniLibs/
 android/unityLibrary/symbols/
+
+.flutter-plugins-dependencies

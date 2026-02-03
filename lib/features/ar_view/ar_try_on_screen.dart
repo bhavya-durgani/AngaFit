@@ -9,40 +9,85 @@ class ARTryOnScreen extends StatefulWidget {
 }
 
 class _ARTryOnScreenState extends State<ARTryOnScreen> {
+  UnityWidgetController? _unityWidgetController;
 
+  // This is called when the Unity scene is ready
+  void onUnityCreated(controller) {
+    _unityWidgetController = controller;
+    // You can send a message to Unity here to load a specific model
+    // _unityWidgetController?.postMessage('ModelLoader', 'LoadModel', 'jacket_01');
+  }
+
+  // This handles messages sent FROM Unity to Flutter
+  void onUnityMessage(message) {
+    print('Received message from Unity: ${message.toString()}');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("AR Try-On"),
-        backgroundColor: Colors.black,
-      ),
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
+          // The actual Unity AR View
           UnityWidget(
-            onUnityCreated: (controller) {},
-            useAndroidViewSurface: true,
+            onUnityCreated: onUnityCreated,
+            onUnityMessage: onUnityMessage,
+            useAndroidViewSurface: true, // Required for AR performance on Android
           ),
+
+          // UI Overlays
+          Positioned(
+            top: 50,
+            left: 20,
+            child: CircleAvatar(
+              backgroundColor: Colors.black54,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+
+          Positioned(
+            bottom: 40,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  "Scanning for body tracking...",
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
+              ),
+            ),
+          ),
+
+          // Optional: Shutter button to take AR photo
           Positioned(
             bottom: 30,
-            left: 20,
-            right: 20,
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: const Text(
-                "Point camera at a flat surface to view clothes",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white),
-              ),
+            right: 30,
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              onPressed: () {
+                // Logic to capture AR screenshot
+              },
+              child: const Icon(Icons.camera_alt, color: Colors.black),
             ),
           ),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _unityWidgetController?.dispose();
+    super.dispose();
   }
 }

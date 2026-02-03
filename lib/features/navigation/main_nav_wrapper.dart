@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import '../../core/constants/app_colors.dart';
 import '../home/home_screen.dart';
+import '../cart/cart_screen.dart';
+import '../profile/profile_screen.dart';
+
 class MainNavWrapper extends StatefulWidget {
   const MainNavWrapper({super.key});
-
   @override
   State<MainNavWrapper> createState() => _MainNavWrapperState();
 }
+
 class _MainNavWrapperState extends State<MainNavWrapper> {
   int _currentIndex = 0;
-  final List<Widget> _pages = [
-    const HomeScreen(),
-    const Center(child: Text("Categories")),
-    const Center(child: Text("Cart")),
-    const Center(child: Text("Profile")),
-  ];
+  final List<Widget> _pages = [HomeScreen(), const Center(child: Text("Shop")), CartScreen(), const Center(child: Text("Fav")), ProfileScreen()];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,13 +22,13 @@ class _MainNavWrapperState extends State<MainNavWrapper> {
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: AppColors.primaryRed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: ""),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), label: "Shop"),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), label: "Bag"),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite_outline), label: "Favorites"),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Profile"),
         ],
       ),
     );
