@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../data/dummy_data.dart';
+import '../../../core/constants/app_colors.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -17,27 +18,68 @@ class ProductCard extends StatelessWidget {
         children: [
           Stack(
             children: [
+              // Product Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(product.imageUrl, height: 200, width: double.infinity, fit: BoxFit.cover),
+                child: CachedNetworkImage(
+                  imageUrl: product.imageUrl,
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(color: Colors.grey[200]),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
               ),
+              // FAVORITES ICON (Heart)
               Positioned(
-                bottom: 0, right: 0,
+                top: 8,
+                right: 8,
                 child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                  child: const Icon(Icons.favorite_border, size: 18, color: AppColors.grey),
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      )
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.favorite_border,
+                    size: 18,
+                    color: AppColors.grey,
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Row(
-            children: List.generate(5, (index) => Icon(Icons.star, color: index < 4 ? Colors.amber : Colors.grey, size: 14)),
+          // Brand Name
+          Text(
+            product.brand,
+            style: const TextStyle(color: AppColors.grey, fontSize: 11),
           ),
-          Text(product.brand, style: const TextStyle(color: AppColors.grey, fontSize: 11)),
-          Text(product.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          Text(product.price, style: const TextStyle(color: AppColors.primaryRed, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 2),
+          // Product Name
+          Text(
+            product.name,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          // Price (Displays Rupee symbol from dummy_data)
+          Text(
+            product.price,
+            style: const TextStyle(
+              color: AppColors.primaryRed,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
         ],
       ),
     );

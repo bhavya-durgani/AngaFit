@@ -1,54 +1,34 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
+import '../../data/dummy_data.dart';
+import '../product_details/product_details_screen.dart';
 
 class FavoritesScreen extends StatelessWidget {
+  const FavoritesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text("Favorites"),
-        actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
-      ),
+      appBar: AppBar(title: const Text("Favorites"), centerTitle: true),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
-        itemCount: 4,
-        itemBuilder: (context, index) => _buildFavoriteItem(),
-      ),
-    );
-  }
-
-  Widget _buildFavoriteItem() {
-    return Container(
-      height: 104,
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
-            child: Image.network('https://images.unsplash.com/photo-1554568218-0f1715e72254', width: 104, fit: BoxFit.cover),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("LIME", style: TextStyle(color: AppColors.grey, fontSize: 11)),
-                  const Text("Shirt", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  const Text("Color: Blue  Size: L", style: TextStyle(color: AppColors.grey, fontSize: 11)),
-                  const Spacer(),
-                  const Text("USD 32.00", style: TextStyle(fontWeight: FontWeight.bold)),
-                ],
+        itemCount: 2,
+        itemBuilder: (context, index) {
+          final p = appProducts[index];
+          return Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+            child: ListTile(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: p))),
+              leading: Image.network(p.imageUrl, width: 50, height: 50, fit: BoxFit.cover),
+              title: Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text(p.brand),
+              trailing: IconButton(
+                icon: const Icon(Icons.shopping_cart, color: Color(0xFFDB3022)),
+                onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Added to Bag!"))),
               ),
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Icon(Icons.close, color: AppColors.grey, size: 20),
-          )
-        ],
+          );
+        },
       ),
     );
   }

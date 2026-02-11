@@ -7,4 +7,5 @@ class AppColors {
   static const Color black = Color(0xFF222222);
   static const Color grey = Color(0xFF9B9B9B);
   static const Color success = Color(0xFF2AA952);
+  static const Color error = Color(0xFFF01F0E); // This was missing
 }

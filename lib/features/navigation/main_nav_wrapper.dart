@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../home/home_screen.dart';
+import '../catalog/product_list_screen.dart';
 import '../cart/cart_screen.dart';
+import '../favorites/favorites_screen.dart';
 import '../profile/profile_screen.dart';
 
 class MainNavWrapper extends StatefulWidget {
   const MainNavWrapper({super.key});
-  @override
-  State<MainNavWrapper> createState() => _MainNavWrapperState();
+  @override State<MainNavWrapper> createState() => _MainNavWrapperState();
 }
 
 class _MainNavWrapperState extends State<MainNavWrapper> {
   int _currentIndex = 0;
-  final List<Widget> _pages = [HomeScreen(), const Center(child: Text("Shop")), CartScreen(), const Center(child: Text("Fav")), ProfileScreen()];
+  final _pages = [const HomeScreen(), const ProductListScreen(), const CartScreen(), const FavoritesScreen(), const ProfileScreen()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),

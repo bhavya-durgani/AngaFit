@@ -1,37 +1,38 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import 'add_shipping_address_screen.dart';
 
-class ShippingAddressScreen extends StatelessWidget {
+class ShippingAddressesScreen extends StatelessWidget {
+  const ShippingAddressesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(title: const Text("Shipping Addresses")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildAddressCard("Jane Doe", "3 Newbridge Court", "Chino Hills, CA 91709, United States", true),
-            const SizedBox(height: 20),
-            _buildAddressCard("Jane Doe", "3 Newbridge Court", "Chino Hills, CA 91709, United States", false),
-          ],
-        ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _addressCard("Jane Doe", "3 Newbridge Court", "Chino Hills, CA 91709, USA", true),
+          const SizedBox(height: 20),
+          _addressCard("John Doe", "516 Center Dr", "Long Beach, NY 11561, USA", false),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AddShippingAddressScreen())),
         backgroundColor: AppColors.black,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
 
-  Widget _buildAddressCard(String name, String street, String city, bool isSelected) {
+  Widget _addressCard(String name, String street, String city, bool isSelected) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: [if (isSelected) BoxShadow(color: Colors.black12, blurRadius: 10)],
+        border: isSelected ? Border.all(color: AppColors.primaryRed) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,13 +44,14 @@ class ShippingAddressScreen extends StatelessWidget {
               const Text("Edit", style: TextStyle(color: AppColors.primaryRed)),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Text(street),
           Text(city),
           const SizedBox(height: 12),
           Row(
             children: [
-              Checkbox(value: isSelected, onChanged: (v) {}, activeColor: AppColors.black),
+              Icon(isSelected ? Icons.check_box : Icons.check_box_outline_blank, color: isSelected ? AppColors.black : AppColors.grey),
+              const SizedBox(width: 8),
               const Text("Use as the shipping address"),
             ],
           )

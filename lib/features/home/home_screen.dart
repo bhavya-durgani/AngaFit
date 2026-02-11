@@ -1,77 +1,84 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../data/dummy_data.dart';
 import '../product_details/product_details_screen.dart';
 import 'widgets/product_card.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Immersive Top Banner
+            // Fashion Sale Banner with Image
             Stack(
               children: [
-                Image.network(
-                  'https://images.unsplash.com/photo-1445205170230-053b830c6050',
-                  height: 550, width: double.infinity, fit: BoxFit.cover,
+                CachedNetworkImage(
+                  imageUrl: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=2070&auto=format&fit=crop",
+                  height: 550,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(color: Colors.grey[300]),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
-                Container(height: 550, width: double.infinity, color: Colors.black26),
-                Positioned(
-                  bottom: 40, left: 20,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Fashion\nsale", style: TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.w900, height: 1)),
-                      const SizedBox(height: 15),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryRed, padding: const EdgeInsets.symmetric(horizontal: 30)),
-                        child: const Text("Check out"),
-                      )
-                    ],
+                Container(
+                  height: 550,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                    ),
                   ),
-                )
+                ),
+                const Positioned(
+                  bottom: 40,
+                  left: 20,
+                  child: Text(
+                    "Fashion\nsale",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 48,
+                      fontWeight: FontWeight.w900,
+                      height: 1,
+                    ),
+                  ),
+                ),
               ],
             ),
-
-            // New Arrivals Section
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("New", style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold)),
-                      Text("You've never seen it before!", style: TextStyle(color: AppColors.grey, fontSize: 11)),
-                    ],
-                  ),
-                  TextButton(onPressed: () {}, child: const Text("View all", style: TextStyle(color: Colors.black))),
-                ],
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text("New Arrivals", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               ),
             ),
-
-            // Product Grid
             GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, childAspectRatio: 0.6, crossAxisSpacing: 15, mainAxisSpacing: 15,
-              ),
-              itemCount: appProducts.length,
-              itemBuilder: (context, index) {
-                return ProductCard(
-                  product: appProducts[index],
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen())),
-                );
-              },
-            ),
-            const SizedBox(height: 30),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.6,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16
+                ),
+                itemCount: appProducts.length,
+                itemBuilder: (context, index) {
+                  final product = appProducts[index];
+                  return ProductCard(
+                      product: product,
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: product))
+                      )
+                  );
+                }
+            )
           ],
         ),
       ),

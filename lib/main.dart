@@ -2,20 +2,14 @@ import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
 import 'features/splash/splash_screen.dart';
 
-void main() {
-  runApp(const AngaFit());
-}
+void main() => runApp(const AngaFit());
 
 class AngaFit extends StatelessWidget {
   const AngaFit({super.key});
-
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context) => MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'AngaFit',
       theme: AppTheme.lightTheme,
-      home: const SplashScreen(),
-    );
-  }
+      home: const SplashScreen()
+  );
 }

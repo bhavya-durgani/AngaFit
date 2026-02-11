@@ -2,28 +2,33 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 
 class SortBottomSheet extends StatelessWidget {
-  final List<String> options = ["Popular", "Newest", "Customer review", "Price: lowest to high", "Price: highest to low"];
+  const SortBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 12),
-          Container(width: 60, height: 6, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(10))),
           const SizedBox(height: 20),
           const Text("Sort by", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          ...options.map((option) => _buildOption(option, option == "Price: lowest to high")),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
+          _sortOption("Popular", false),
+          _sortOption("Newest", false),
+          _sortOption("Customer review", false),
+          _sortOption("Price: lowest to high", true),
+          _sortOption("Price: highest to low", false),
+          const SizedBox(height: 30),
         ],
       ),
     );
   }
 
-  Widget _buildOption(String title, bool isSelected) {
+  Widget _sortOption(String title, bool isSelected) {
     return Container(
       width: double.infinity,
       color: isSelected ? AppColors.primaryRed : Colors.transparent,

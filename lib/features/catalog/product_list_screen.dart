@@ -1,61 +1,130 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../data/dummy_data.dart';
+import '../home/widgets/product_card.dart';
+import '../product_details/product_details_screen.dart';
+import '../search/search_screen.dart';
+import 'widgets/filter_bottom_sheet.dart';
+import 'widgets/sort_bottom_sheet.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
+class ProductListScreen extends StatefulWidget {
+  const ProductListScreen({super.key});
+
+  @override
+  State<ProductListScreen> createState() => _ProductListScreenState();
+}
+
+class _ProductListScreenState extends State<ProductListScreen> {
+  String activeCategory = "All";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(leading: const Icon(Icons.chevron_left, size: 32)),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 18),
-            const Text("Forgot password", style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 70),
-            const Text("Please, enter your email address. You will receive a link to create a new password via email."),
-            const SizedBox(height: 16),
-            _buildTextField("Email", "muffin.sweet@gmail.com", true),
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryRed,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: const Text("SEND", style: TextStyle(color: Colors.white)),
-              ),
+      appBar: AppBar(
+        title: const Text("Shop"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SearchScreen()),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // CENTER ALIGNED CATEGORY BAR
+          Container(
+            height: 50,
+            width: double.infinity,
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: appCategories.map((category) {
+                bool isSelected = activeCategory == category;
+                return GestureDetector(
+                  onTap: () => setState(() => activeCategory = category),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          category,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            color: isSelected ? AppColors.black : AppColors.grey,
+                          ),
+                        ),
+                        if (isSelected)
+                          Container(
+                            margin: const EdgeInsets.only(top: 4),
+                            height: 3,
+                            width: 20,
+                            color: AppColors.primaryRed,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+
+          // Action Bar
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _barItem(Icons.filter_list, "Filters", () => showModalBottomSheet(context: context, isScrollControlled: true, builder: (_) => const FilterBottomSheet())),
+                _barItem(Icons.swap_vert, "Price: low to high", () => showModalBottomSheet(context: context, builder: (_) => const SortBottomSheet())),
+                const Icon(Icons.view_module, color: AppColors.black),
+              ],
+            ),
+          ),
+
+          // Product Grid
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.6,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+              ),
+              itemCount: appProducts.length,
+              itemBuilder: (context, index) {
+                final product = appProducts[index];
+                return ProductCard(
+                  product: product,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: product)),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildTextField(String label, String value, bool hasError) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
-        border: hasError ? Border.all(color: AppColors.error) : null,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _barItem(IconData icon, String label, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Row(
         children: [
-          Text(label, style: const TextStyle(color: AppColors.grey, fontSize: 11)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(value, style: const TextStyle(fontSize: 14)),
-              if (hasError) const Icon(Icons.close, color: AppColors.error, size: 20),
-            ],
-          ),
+          Icon(icon, size: 20),
+          const SizedBox(width: 8),
+          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
         ],
       ),
     );
