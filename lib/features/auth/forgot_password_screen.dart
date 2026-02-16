@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/constants/app_colors.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -11,6 +12,44 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
+  bool _isLoading = false;
+
+  // LOGIC: Sends the actual password reset email via Firebase
+  Future<void> _sendResetEmail() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+      try {
+        await FirebaseAuth.instance.sendPasswordResetEmail(
+          email: _emailController.text.trim(),
+        );
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: AppColors.success,
+              content: Text("Reset link has been sent to your email ID!"),
+            ),
+          );
+          // Return to Login screen after sending
+          Navigator.pop(context);
+        }
+      } on FirebaseAuthException catch (e) {
+        String message = "An error occurred. Please try again.";
+        if (e.code == 'user-not-found') {
+          message = "No user found with this email.";
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColors.error,
+            content: Text(message),
+          ),
+        );
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +61,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -35,37 +74,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 70),
-
               const Text(
                 "Please, enter your email address. You will receive a link to create a new password via email.",
-                style: TextStyle(fontSize: 14, color: AppColors.black, height: 1.4),
+                style: TextStyle(fontSize: 14, height: 1.4),
               ),
               const SizedBox(height: 16),
 
-              // Email Field with Validation
+              // Email Input Field
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(4),
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
+                    BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2)),
                   ],
                 ),
                 child: TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter your email";
-                    }
-                    // Email RegEx
+                    if (value == null || value.isEmpty) return "Please enter your email";
                     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                      return "Not a valid email address. Should be your@email.com";
+                      return "Not a valid email address";
                     }
                     return null;
                   },
@@ -80,23 +111,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
               const SizedBox(height: 40),
 
-              // Send Button with Validation Check
+              // SEND BUTTON
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // If valid, show success and go back
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          backgroundColor: AppColors.success,
-                          content: Text("Reset link sent! Please check your inbox."),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: const Text("SEND"),
+                  onPressed: _isLoading ? null : _sendResetEmail,
+                  child: _isLoading
+                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      : const Text("SEND"),
                 ),
               ),
             ],

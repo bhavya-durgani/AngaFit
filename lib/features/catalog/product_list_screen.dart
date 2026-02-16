@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/dummy_data.dart';
 import '../home/widgets/product_card.dart';
 import '../product_details/product_details_screen.dart';
-import '../search/search_screen.dart';
-import 'widgets/filter_bottom_sheet.dart';
-import 'widgets/sort_bottom_sheet.dart';
 
 class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
+  final String? searchQuery; // Optional query from the Search tab
+  const ProductListScreen({super.key, this.searchQuery});
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
@@ -16,6 +15,13 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   String activeCategory = "All";
+  String currentSearch = "";
+
+  @override
+  void initState() {
+    super.initState();
+    currentSearch = widget.searchQuery ?? "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,90 +30,64 @@ class _ProductListScreenState extends State<ProductListScreen> {
       appBar: AppBar(
         title: const Text("Shop"),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const SearchScreen()),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextField(
+              onChanged: (val) => setState(() => currentSearch = val),
+              decoration: InputDecoration(
+                hintText: "Search products...",
+                prefixIcon: const Icon(Icons.search),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
+              ),
             ),
           ),
-        ],
+        ),
       ),
       body: Column(
         children: [
-          // CENTER ALIGNED CATEGORY BAR
+          // Centered Category Bar
           Container(
-            height: 50,
-            width: double.infinity,
-            color: Colors.white,
+            height: 50, width: double.infinity, color: Colors.white,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: appCategories.map((category) {
                 bool isSelected = activeCategory == category;
                 return GestureDetector(
                   onTap: () => setState(() => activeCategory = category),
-                  child: Container(
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          category,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            color: isSelected ? AppColors.black : AppColors.grey,
-                          ),
-                        ),
-                        if (isSelected)
-                          Container(
-                            margin: const EdgeInsets.only(top: 4),
-                            height: 3,
-                            width: 20,
-                            color: AppColors.primaryRed,
-                          ),
-                      ],
-                    ),
+                    child: Text(category, style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal, color: isSelected ? AppColors.black : AppColors.grey)),
                   ),
                 );
               }).toList(),
             ),
           ),
-
-          // Action Bar
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _barItem(Icons.filter_list, "Filters", () => showModalBottomSheet(context: context, isScrollControlled: true, builder: (_) => const FilterBottomSheet())),
-                _barItem(Icons.swap_vert, "Price: low to high", () => showModalBottomSheet(context: context, builder: (_) => const SortBottomSheet())),
-                const Icon(Icons.view_module, color: AppColors.black),
-              ],
-            ),
-          ),
-
-          // Product Grid
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.6,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-              ),
-              itemCount: appProducts.length,
-              itemBuilder: (context, index) {
-                final product = appProducts[index];
-                return ProductCard(
-                  product: product,
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: product)),
-                  ),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _getFilteredStream(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+
+                // Client-side filtering for Search (Firestore doesn't support easy partial string search)
+                final docs = snapshot.data!.docs.where((doc) {
+                  final name = doc['name'].toString().toLowerCase();
+                  return name.contains(currentSearch.toLowerCase());
+                }).toList();
+
+                if (docs.isEmpty) return const Center(child: Text("No products found"));
+
+                return GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.6, mainAxisSpacing: 16, crossAxisSpacing: 16),
+                  itemCount: docs.length,
+                  itemBuilder: (context, index) {
+                    final product = Product.fromFirestore(docs[index]);
+                    return ProductCard(product: product, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: product))));
+                  },
                 );
               },
             ),
@@ -117,16 +97,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 
-  Widget _barItem(IconData icon, String label, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Row(
-        children: [
-          Icon(icon, size: 20),
-          const SizedBox(width: 8),
-          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-        ],
-      ),
-    );
+  Stream<QuerySnapshot> _getFilteredStream() {
+    if (activeCategory == "All") {
+      return FirebaseFirestore.instance.collection('products').snapshots();
+    } else {
+      return FirebaseFirestore.instance.collection('products').where('category', isEqualTo: activeCategory).snapshots();
+    }
   }
 }

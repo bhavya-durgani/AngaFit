@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "746067234274",
+    "project_id": "angafir-afaf7",
+    "storage_bucket": "angafir-afaf7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746067234274:android:25bfd41ae86a92f85ebdbb",
+        "android_client_info": {
+          "package_name": "com.example.AngaFit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746067234274-8iuvb2605q5nhbpn3iiu1l176a0e1gks.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.AngaFit",
+            "certificate_hash": "8db26dfbb1673f980656a3c9a11506e3f99d8aa4"
+          }
+        },
+        {
+          "client_id": "746067234274-a0g74m8fvgpinam6vea2hq47bgtsrtqs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlHUIbWsxJNt2YlcaY0UmfbShhw3lctxU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "746067234274-a0g74m8fvgpinam6vea2hq47bgtsrtqs.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "746067234274-rreg2s9saouotkmudunlgk5mknrq6u67.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.AngaFit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
