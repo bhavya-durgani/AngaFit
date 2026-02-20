@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/dummy_data.dart';
 import '../home/widgets/product_card.dart';
@@ -12,46 +13,41 @@ class SearchResultsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text(query),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            color: Colors.white,
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(children: [Icon(Icons.filter_list, size: 20), Text(" Filters")]),
-                Row(children: [Icon(Icons.swap_vert, size: 20), Text(" Price: low to high")]),
-              ],
+      appBar: AppBar(title: Text("Results for '$query'"), centerTitle: true),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('products').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+
+          // Search logic: Match related words in product name
+          final docs = snapshot.data!.docs.where((doc) {
+            final name = doc['name'].toString().toLowerCase();
+            return name.contains(query.toLowerCase());
+          }).toList();
+
+          if (docs.isEmpty) return const Center(child: Text("No matches found"));
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.6,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
             ),
-          ),
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.6,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
-              ),
-              itemCount: appProducts.length,
-              itemBuilder: (context, index) {
-                final product = appProducts[index];
-                return ProductCard(
-                  product: product,
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: product)),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              final product = Product.fromFirestore(docs[index]);
+              return ProductCard(
+                product: product,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: product)),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

@@ -13,7 +13,13 @@ class MainNavWrapper extends StatefulWidget {
 
 class _MainNavWrapperState extends State<MainNavWrapper> {
   int _currentIndex = 0;
-  final _pages = [const HomeScreen(), const ProductListScreen(), const CartScreen(), const FavoritesScreen(), const ProfileScreen()];
+  final _pages = [
+    const HomeScreen(),
+    const ProductListScreen(),
+    const CartScreen(),
+    const FavoritesScreen(),
+    const ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +31,11 @@ class _MainNavWrapperState extends State<MainNavWrapper> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.primaryRed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), label: "Shop"),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), label: "Bag"),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_outline), label: "Favorites"),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), activeIcon: Icon(Icons.shopping_cart), label: "Shop"),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), activeIcon: Icon(Icons.shopping_bag), label: "Bag"),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite_outline), activeIcon: Icon(Icons.favorite), label: "Favorites"),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), activeIcon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );

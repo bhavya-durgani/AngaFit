@@ -17,30 +17,20 @@ class SortBottomSheet extends StatelessWidget {
           const SizedBox(height: 20),
           const Text("Sort by", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
-          _sortOption("Popular", false),
-          _sortOption("Newest", false),
-          _sortOption("Customer review", false),
-          _sortOption("Price: lowest to high", true),
-          _sortOption("Price: highest to low", false),
+          _sortTile(context, "Newest"),
+          _sortTile(context, "Price: low to high"),
+          _sortTile(context, "Price: high to low"),
           const SizedBox(height: 30),
         ],
       ),
     );
   }
 
-  Widget _sortOption(String title, bool isSelected) {
-    return Container(
-      width: double.infinity,
-      color: isSelected ? AppColors.primaryRed : Colors.transparent,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 16,
-          color: isSelected ? Colors.white : AppColors.black,
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        ),
-      ),
+  Widget _sortTile(BuildContext context, String title) {
+    return ListTile(
+      title: Text(title),
+      // Logic: Closes the sheet and sends the title back to ProductListScreen
+      onTap: () => Navigator.pop(context, title),
     );
   }
 }

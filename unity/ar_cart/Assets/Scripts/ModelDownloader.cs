@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
-using FlutterUnityWidget;
+using FlutterUnityIntegration;
 
 public class ModelDownloader : MonoBehaviour
 {

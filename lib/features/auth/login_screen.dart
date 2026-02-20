@@ -1,36 +1,46 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/utils/error_handler.dart';
 import '../../data/services/auth_service.dart';
 import '../navigation/main_nav_wrapper.dart';
 import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  @override State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  // Handle Social Login Redirection
-  Future<void> _handleSocialLogin(Future<dynamic> loginMethod) async {
+  Future<void> _handleLogin() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+      try {
+        await AuthService().login(_emailController.text.trim(), _passwordController.text.trim());
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const MainNavWrapper()), (r) => false);
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor: AppColors.error, content: Text(ErrorHandler.getErrorMessage(e))));
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  Future<void> _handleGoogleLogin() async {
     setState(() => _isLoading = true);
     try {
-      final user = await loginMethod;
-      if (user != null && mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const MainNavWrapper()),
-              (route) => false,
-        );
+      await AuthService().signInWithGoogle();
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const MainNavWrapper()), (r) => false);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: AppColors.error));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor: AppColors.error, content: Text(ErrorHandler.getErrorMessage(e))));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -40,14 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, size: 32),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
+      appBar: AppBar(leading: IconButton(icon: const Icon(Icons.chevron_left, size: 32), onPressed: () => Navigator.pop(context))),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -56,57 +61,31 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 18),
               const Text("Login", style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold)),
               const SizedBox(height: 70),
-
-              _buildInputField(
-                label: "Email",
-                controller: _emailController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) return "Please enter your email";
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) return "Enter a valid email";
-                  return null;
-                },
-              ),
+              _buildField("Email", _emailController, (v) => (v == null || !v.contains("@")) ? "Enter valid email" : null),
               const SizedBox(height: 8),
-              _buildInputField(
-                label: "Password",
-                controller: _passwordController,
-                isPassword: true,
-                validator: (value) => (value == null || value.isEmpty) ? "Please enter your password" : null,
-              ),
-
+              _buildField("Password", _passwordController, (v) => (v == null || v.isEmpty) ? "Enter password" : null, isPass: true),
               const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerRight,
-                child: InkWell(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgotPasswordScreen())),
-                  child: const Text("Forgot your password? →", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                ),
-              ),
-
+              Align(alignment: Alignment.centerRight, child: InkWell(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ForgotPasswordScreen())), child: const Text("Forgot your password? →"))),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : () async {
-                    if (_formKey.currentState!.validate()) {
-                      _handleSocialLogin(AuthService().login(_emailController.text, _passwordController.text));
-                    }
-                  },
+                  onPressed: _isLoading ? null : _handleLogin,
                   child: _isLoading ? const CircularProgressIndicator(color: Colors.white) : const Text("LOGIN"),
                 ),
               ),
-
-              const SizedBox(height: 80),
-              const Center(child: Text("Or login with social account", style: TextStyle(color: AppColors.grey, fontSize: 14))),
+              const SizedBox(height: 60),
+              const Center(child: Text("Or login with social account", style: TextStyle(color: AppColors.grey))),
               const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _socialIcon(
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png",
-                    onTap: () => _handleSocialLogin(AuthService().signInWithGoogle()),
+              Center(
+                child: InkWell(
+                  onTap: _isLoading ? null : _handleGoogleLogin,
+                  child: Container(
+                    padding: const EdgeInsets.all(12), width: 92, height: 64,
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24), boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)]),
+                    child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png", fit: BoxFit.contain),
                   ),
-                ],
+                ),
               )
             ],
           ),
@@ -115,22 +94,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildInputField({required String label, required TextEditingController controller, required String? Function(String?) validator, bool isPassword = false}) {
+  Widget _buildField(String l, TextEditingController c, String? Function(String?) v, {bool isPass = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]),
-      child: TextFormField(controller: controller, obscureText: isPassword, validator: validator, decoration: InputDecoration(labelText: label, border: InputBorder.none, errorStyle: const TextStyle(color: AppColors.error, fontSize: 12))),
-    );
-  }
-
-  Widget _socialIcon(String imageUrl, {required VoidCallback onTap}) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(12), width: 92, height: 64,
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8)]),
-        child: Image.network(imageUrl, fit: BoxFit.contain),
-      ),
+      child: TextFormField(controller: c, validator: v, obscureText: isPass, decoration: InputDecoration(labelText: l, border: InputBorder.none, errorStyle: const TextStyle(color: AppColors.error))),
     );
   }
 }

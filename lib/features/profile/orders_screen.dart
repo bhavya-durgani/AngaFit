@@ -9,17 +9,15 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(title: const Text("My Orders"), centerTitle: true),
-      body: user == null
-          ? const Center(child: Text("Please login"))
-          : StreamBuilder<QuerySnapshot>(
+      body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .doc(user.uid)
+            .doc(uid)
             .collection('orders')
             .orderBy('createdAt', descending: true)
             .snapshots(),
@@ -34,7 +32,6 @@ class OrdersScreen extends StatelessWidget {
             itemCount: docs.length,
             itemBuilder: (context, index) {
               final data = docs[index].data() as Map<String, dynamic>;
-              // Pass the ID and the Data map here
               return _buildOrderCard(context, docs[index].id, data);
             },
           );
@@ -65,21 +62,15 @@ class OrdersScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Use data['total'] from Firebase
               Text("Total Amount: ₹${data['total']}", style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text(data['status'] ?? "Processing", style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.bold)),
+              Text(data['status'] ?? "Delivered", style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 15),
           OutlinedButton(
             onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (_) => OrderDetailsScreen(
-                      orderId: orderId,
-                      orderData: data, // Pass the map to the details screen
-                    )
-                )
+                MaterialPageRoute(builder: (_) => OrderDetailsScreen(orderId: orderId, orderData: data))
             ),
             child: const Text("Details"),
           )

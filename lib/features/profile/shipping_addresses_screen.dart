@@ -9,18 +9,18 @@ class ShippingAddressesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text("Shipping Addresses")),
+      appBar: AppBar(title: const Text("Shipping Addresses"), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           _addressCard("Jane Doe", "3 Newbridge Court", "Chino Hills, CA 91709, USA", true),
           const SizedBox(height: 20),
-          _addressCard("John Doe", "516 Center Dr", "Long Beach, NY 11561, USA", false),
+          _addressCard("Jane Doe", "516 Center Dr", "Long Beach, NY 11561, USA", false),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AddShippingAddressScreen())),
         backgroundColor: AppColors.black,
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AddShippingAddressScreen())),
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -28,11 +28,11 @@ class ShippingAddressesScreen extends StatelessWidget {
 
   Widget _addressCard(String name, String street, String city, bool isSelected) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: isSelected ? Border.all(color: AppColors.primaryRed) : null,
+        boxShadow: [if (isSelected) BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,14 +44,13 @@ class ShippingAddressesScreen extends StatelessWidget {
               const Text("Edit", style: TextStyle(color: AppColors.primaryRed)),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Text(street),
           Text(city),
           const SizedBox(height: 12),
           Row(
             children: [
-              Icon(isSelected ? Icons.check_box : Icons.check_box_outline_blank, color: isSelected ? AppColors.black : AppColors.grey),
-              const SizedBox(width: 8),
+              Checkbox(value: isSelected, activeColor: Colors.black, onChanged: (v) {}),
               const Text("Use as the shipping address"),
             ],
           )

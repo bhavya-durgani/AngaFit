@@ -15,7 +15,6 @@ android {
     namespace "com.unity3d.player"
     // ndkPath "C:/Program Files/Unity/Hub/Editor/2022.3.62f3/Editor/Data/PlaybackEngines/AndroidPlayer/NDK"
     compileSdkVersion 36
-    ndkVersion "27.3.13750724"
     buildToolsVersion '34.0.0'
 
     compileOptions {

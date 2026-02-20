@@ -1,93 +1,72 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../catalog/product_list_screen.dart';
 
-class SettingsScreen extends StatefulWidget {
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
+class SubCategoriesScreen extends StatelessWidget {
+  final String categoryName;
+  const SubCategoriesScreen({super.key, required this.categoryName});
 
-class _SettingsScreenState extends State<SettingsScreen> {
-  bool salesNotify = true;
-  bool arrivalsNotify = false;
+  final List<String> subCategories = [
+    "Tops", "Shirts & Blouses", "Cardigans & Sweaters",
+    "Knitwear", "Blazers", "Outerwear", "Pants", "Jeans"
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text("Settings")),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Settings", style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 24),
-            const Text("Personal Information", style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            _buildInput("Full name", "Matilda Brown"),
-            const SizedBox(height: 16),
-            _buildInput("Date of Birth", "12/12/1989"),
-            const SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Password", style: TextStyle(fontWeight: FontWeight.bold)),
-                TextButton(onPressed: () => _showPasswordChange(context), child: const Text("Change", style: TextStyle(color: AppColors.grey))),
-              ],
-            ),
-            _buildInput("Password", "********"),
-            const SizedBox(height: 32),
-            const Text("Notifications", style: TextStyle(fontWeight: FontWeight.bold)),
-            SwitchListTile(title: const Text("Sales"), value: salesNotify, onChanged: (v) => setState(() => salesNotify = v), activeColor: AppColors.success),
-            SwitchListTile(title: const Text("New arrivals"), value: arrivalsNotify, onChanged: (v) => setState(() => arrivalsNotify = v), activeColor: AppColors.success),
-          ],
+      appBar: AppBar(
+        title: Text(categoryName),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left, size: 32),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-    );
-  }
-
-  Widget _buildInput(String label, String value) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
         children: [
-          Text(label, style: const TextStyle(color: AppColors.grey, fontSize: 11)),
-          Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-        ],
-      ),
-    );
-  }
-
-  void _showPasswordChange(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        height: MediaQuery.of(context).size.height * 0.6,
-        child: Column(
-          children: [
-            const Text("Password Change", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 24),
-            const TextField(decoration: InputDecoration(labelText: "Old Password")),
-            const SizedBox(height: 16),
-            const TextField(decoration: InputDecoration(labelText: "New Password")),
-            const SizedBox(height: 16),
-            const TextField(decoration: InputDecoration(labelText: "Repeat New Password")),
-            const Spacer(),
-            SizedBox(
+          const SizedBox(height: 16),
+          // View All Button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryRed, padding: const EdgeInsets.symmetric(vertical: 14)),
-                child: const Text("SAVE PASSWORD", style: TextStyle(color: Colors.white)),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ProductListScreen())
+                ),
+                child: const Text("VIEW ALL ITEMS"),
               ),
-            )
-          ],
-        ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Padding(
+            padding: EdgeInsets.only(left: 16, bottom: 10),
+            child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Choose category", style: TextStyle(color: AppColors.grey))
+            ),
+          ),
+          // Sub-Category List
+          Expanded(
+            child: ListView.separated(
+              itemCount: subCategories.length,
+              separatorBuilder: (context, index) => const Divider(indent: 16),
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                      subCategories[index],
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)
+                  ),
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ProductListScreen())
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

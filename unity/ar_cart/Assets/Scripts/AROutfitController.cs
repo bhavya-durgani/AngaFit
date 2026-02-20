@@ -1,31 +1,29 @@
 using UnityEngine;
-using FlutterUnityWidget;
+using UnityEngine.Video;
+using FlutterUnityIntegration;
 using System.Collections.Generic;
 
 public class AROutfitController : MonoBehaviour
 {
-    public List<GameObject> clothingPrefabs; // Assign your 3D models here in the Inspector
+    public VideoPlayer videoBackground; // Assign a VideoPlayer in Inspector
+    public List<GameObject> clothingPrefabs;
     private GameObject currentOutfit;
 
-    // This method is called by Flutter: controller.postMessage('GameObject', 'ChangeOutfit', 'outfit_id')
-    public void ChangeOutfit(string outfitId)
+    // Called by Flutter to set the recorded video as background
+    public void SetVideoBackground(string path)
     {
-        // Remove current outfit if it exists
-        if (currentOutfit != null) Destroy(currentOutfit);
-
-        // Find and instantiate the new outfit from the list
-        GameObject prefab = clothingPrefabs.Find(p => p.name == outfitId);
-        if (prefab != null)
-        {
-            currentOutfit = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-            // Logic to snap the outfit to the AR Human Body Tracker
-            currentOutfit.transform.parent = GameObject.FindWithTag("ARHuman").transform;
-        }
+        videoBackground.url = path;
+        videoBackground.Play();
     }
 
-    // Call this to notify Flutter that the fit is successful
-    public void NotifyFitSuccess()
+    public void ChangeOutfit(string outfitId)
     {
-        UnityMessageManager.Instance.SendMessageToFlutter("FIT_SUCCESS");
+        if (currentOutfit != null) Destroy(currentOutfit);
+        GameObject prefab = clothingPrefabs.Find(p => p.name == outfitId);
+        if (prefab != null) {
+            currentOutfit = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            // In video mode, the outfit stays centered while the person in the video turns
+            currentOutfit.transform.position = new Vector3(0, 0, 5);
+        }
     }
 }

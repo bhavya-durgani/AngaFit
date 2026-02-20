@@ -5,39 +5,49 @@ class OrderDetailsScreen extends StatelessWidget {
   final String orderId;
   final Map<String, dynamic> orderData;
 
-  const OrderDetailsScreen({
-    super.key,
-    required this.orderId,
-    required this.orderData
-  });
+  const OrderDetailsScreen({super.key, required this.orderId, required this.orderData});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Order Details")),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(title: const Text("Order Details"), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Order №$orderId", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Order №$orderId", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                const Text("Jan 30, 2026", style: TextStyle(color: AppColors.grey)),
+              ],
+            ),
             const SizedBox(height: 12),
             Text(
-                "Status: ${orderData['status'] ?? 'Processing'}",
+                "Status: ${orderData['status']}",
                 style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.bold)
             ),
             const SizedBox(height: 30),
             const Text("Order information", style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             _infoRow("Total Amount:", "₹${orderData['total']}"),
-            _infoRow("Items:", "${orderData['itemsCount'] ?? 0} items"),
-            _infoRow("Date:", "Jan 30, 2026"),
+            _infoRow("Items:", "${orderData['itemsCount']} items"),
             const Divider(height: 40),
             const Text("Delivery Address", style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             const Text(
                 "3 Newbridge Court, Chino Hills, CA 91709, USA",
-                style: TextStyle(color: AppColors.grey)
+                style: TextStyle(color: AppColors.grey, height: 1.4)
+            ),
+            const SizedBox(height: 40),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("BACK TO ORDERS"),
+              ),
             ),
           ],
         ),

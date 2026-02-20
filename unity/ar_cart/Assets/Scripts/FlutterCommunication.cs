@@ -1,5 +1,5 @@
 using UnityEngine;
-using FlutterUnityWidget;
+using FlutterUnityIntegration;
 
 public class FlutterCommunication : MonoBehaviour
 {

@@ -28,6 +28,23 @@ extern void SceneLoader_SwitchNative_m68C165016C6A7B1F29960507F65455523EA3A5F8 (
 extern void SceneLoader_UnloadNative_mA699427D00E7DD75BD5EFA4B0D54AFE5A0AFEACA (void);
 extern void SceneLoader_QuitNative_mFE5B0B163F9D560A10ADB3574AFE755BAF6BFA43 (void);
 extern void SceneLoader__ctor_m2248766DF38AF07562AD31501C7275B8DF1B7D29 (void);
+extern void AROutfitController_ChangeOutfit_m56394988718B444E66BCC5BE88E2261AAD8F702E (void);
+extern void AROutfitController_NotifyFitSuccess_m6AEFC0B31E751712BDE46327974AE8C7C1B12825 (void);
+extern void AROutfitController__ctor_m1ADE9E363E4DCE922ABE41AF6A86B2E21A73C616 (void);
+extern void U3CU3Ec__DisplayClass2_0__ctor_m0C15CE387117FD8CBE2EF856A0D94037DF7245E3 (void);
+extern void U3CU3Ec__DisplayClass2_0_U3CChangeOutfitU3Eb__0_m0CD190B3B9F54BB7F5C881A00C67697FD205E5E4 (void);
+extern void FlutterCommunication_LoadProductModel_mADA0EFC25AF738CABA68FDC158F42770EC9A6DF7 (void);
+extern void FlutterCommunication_SendFitDataToFlutter_m7F754CC9771CE90BA627110F0254F4B943600CF0 (void);
+extern void FlutterCommunication__ctor_mFD2E03046582BB45D024707F82321C11384D38AA (void);
+extern void ModelDownloader_DownloadAndLoad_m3E7660900E379E728D9FDAB3C751574C56DB83A2 (void);
+extern void ModelDownloader_GetAssetBundle_mCC09339CE5E4E8816CA258C98952DD666F20D56F (void);
+extern void ModelDownloader__ctor_mECDB0F8CCD2DD7A117E174CB3663E622F758D784 (void);
+extern void U3CGetAssetBundleU3Ed__2__ctor_m2B50C11A4DBDFBF9823C3FC1582F512799C315D9 (void);
+extern void U3CGetAssetBundleU3Ed__2_System_IDisposable_Dispose_m6AC398BE0274913EA2C265D5ACCEDA435E5C618C (void);
+extern void U3CGetAssetBundleU3Ed__2_MoveNext_mEFE3D799F6B44C43C2ABEA1C6F54479DA52C68F7 (void);
+extern void U3CGetAssetBundleU3Ed__2_System_Collections_Generic_IEnumeratorU3CSystem_ObjectU3E_get_Current_m076413D32FE67F3C28F34A13B9B87886FF6BFB45 (void);
+extern void U3CGetAssetBundleU3Ed__2_System_Collections_IEnumerator_Reset_m1252DC4EFD3273449D4B8A352E26F6CEF5901EF5 (void);
+extern void U3CGetAssetBundleU3Ed__2_System_Collections_IEnumerator_get_Current_m22DEE16A462E118601124D64965C908CA9BCFEE4 (void);
 extern void UnitySourceGeneratedAssemblyMonoScriptTypes_v1_Get_mBEB95BEB954BB63E9710BBC7AD5E78C4CB0A0033 (void);
 extern void UnitySourceGeneratedAssemblyMonoScriptTypes_v1__ctor_mE70FB23ACC1EA12ABC948AA22C2E78B2D0AA39B1 (void);
 extern void NativeAPI_OnSceneLoaded_m200A791C356A252E1D5F2BB13BC2CED455A02259 (void);
@@ -63,7 +80,7 @@ extern void MessageHandlerDelegate__ctor_m287CBD25D77011FC5A52D1090F6CC31353AB63
 extern void MessageHandlerDelegate_Invoke_mD1EC9E1841D5014C40A26D4C4BA076482FFC8A4B (void);
 extern void MessageHandlerDelegate_BeginInvoke_m0CC5C5B29E11DD03F1726B49E4B1E516479AC58D (void);
 extern void MessageHandlerDelegate_EndInvoke_mAD2746E001DB9A3D18A1D806610542321FE0CF16 (void);
-static Il2CppMethodPointer s_methodPointers[64] = 
+static Il2CppMethodPointer s_methodPointers[81] = 
 {
 	NULL,
 	NULL,
@@ -89,6 +106,23 @@ static Il2CppMethodPointer s_methodPointers[64] =
 	SceneLoader_UnloadNative_mA699427D00E7DD75BD5EFA4B0D54AFE5A0AFEACA,
 	SceneLoader_QuitNative_mFE5B0B163F9D560A10ADB3574AFE755BAF6BFA43,
 	SceneLoader__ctor_m2248766DF38AF07562AD31501C7275B8DF1B7D29,
+	AROutfitController_ChangeOutfit_m56394988718B444E66BCC5BE88E2261AAD8F702E,
+	AROutfitController_NotifyFitSuccess_m6AEFC0B31E751712BDE46327974AE8C7C1B12825,
+	AROutfitController__ctor_m1ADE9E363E4DCE922ABE41AF6A86B2E21A73C616,
+	U3CU3Ec__DisplayClass2_0__ctor_m0C15CE387117FD8CBE2EF856A0D94037DF7245E3,
+	U3CU3Ec__DisplayClass2_0_U3CChangeOutfitU3Eb__0_m0CD190B3B9F54BB7F5C881A00C67697FD205E5E4,
+	FlutterCommunication_LoadProductModel_mADA0EFC25AF738CABA68FDC158F42770EC9A6DF7,
+	FlutterCommunication_SendFitDataToFlutter_m7F754CC9771CE90BA627110F0254F4B943600CF0,
+	FlutterCommunication__ctor_mFD2E03046582BB45D024707F82321C11384D38AA,
+	ModelDownloader_DownloadAndLoad_m3E7660900E379E728D9FDAB3C751574C56DB83A2,
+	ModelDownloader_GetAssetBundle_mCC09339CE5E4E8816CA258C98952DD666F20D56F,
+	ModelDownloader__ctor_mECDB0F8CCD2DD7A117E174CB3663E622F758D784,
+	U3CGetAssetBundleU3Ed__2__ctor_m2B50C11A4DBDFBF9823C3FC1582F512799C315D9,
+	U3CGetAssetBundleU3Ed__2_System_IDisposable_Dispose_m6AC398BE0274913EA2C265D5ACCEDA435E5C618C,
+	U3CGetAssetBundleU3Ed__2_MoveNext_mEFE3D799F6B44C43C2ABEA1C6F54479DA52C68F7,
+	U3CGetAssetBundleU3Ed__2_System_Collections_Generic_IEnumeratorU3CSystem_ObjectU3E_get_Current_m076413D32FE67F3C28F34A13B9B87886FF6BFB45,
+	U3CGetAssetBundleU3Ed__2_System_Collections_IEnumerator_Reset_m1252DC4EFD3273449D4B8A352E26F6CEF5901EF5,
+	U3CGetAssetBundleU3Ed__2_System_Collections_IEnumerator_get_Current_m22DEE16A462E118601124D64965C908CA9BCFEE4,
 	UnitySourceGeneratedAssemblyMonoScriptTypes_v1_Get_mBEB95BEB954BB63E9710BBC7AD5E78C4CB0A0033,
 	UnitySourceGeneratedAssemblyMonoScriptTypes_v1__ctor_mE70FB23ACC1EA12ABC948AA22C2E78B2D0AA39B1,
 	NativeAPI_OnSceneLoaded_m200A791C356A252E1D5F2BB13BC2CED455A02259,
@@ -130,7 +164,7 @@ static Il2CppMethodPointer s_methodPointers[64] =
 	MessageHandlerDelegate_BeginInvoke_m0CC5C5B29E11DD03F1726B49E4B1E516479AC58D,
 	MessageHandlerDelegate_EndInvoke_mAD2746E001DB9A3D18A1D806610542321FE0CF16,
 };
-static const int32_t s_InvokerIndices[64] = 
+static const int32_t s_InvokerIndices[81] = 
 {
 	0,
 	0,
@@ -156,24 +190,41 @@ static const int32_t s_InvokerIndices[64] =
 	2817,
 	2817,
 	2817,
-	5424,
+	2446,
 	2817,
-	4688,
-	5240,
-	5403,
-	5403,
-	5403,
+	2817,
+	2817,
+	1938,
+	2446,
+	2446,
+	2817,
+	2446,
+	2204,
+	2817,
+	2434,
+	2817,
+	2690,
+	2747,
+	2817,
+	2747,
+	5425,
+	2817,
+	4689,
+	5241,
+	5404,
+	5404,
+	5404,
 	2817,
 	0,
 	0,
 	0,
 	0,
-	5037,
+	5038,
 	0,
 	600,
 	2446,
 	2817,
-	5353,
+	5354,
 	2446,
 	2446,
 	2446,
@@ -200,8 +251,8 @@ static const int32_t s_InvokerIndices[64] =
 static const Il2CppTokenRangePair s_rgctxIndices[3] = 
 {
 	{ 0x02000002, { 0, 29 } },
-	{ 0x02000009, { 29, 11 } },
-	{ 0x06000026, { 40, 2 } },
+	{ 0x0200000E, { 29, 11 } },
+	{ 0x06000037, { 40, 2 } },
 };
 extern const uint32_t g_rgctx_U3CU3Ef__AnonymousType0_4_t93FD0713D40011506D6B5581D9D5064D1A1A31B8;
 extern const uint32_t g_rgctx_U3CidU3Ej__TPar_tB4283D6614B0A1B9713411CF590AE6445EC76C76;
@@ -295,7 +346,7 @@ IL2CPP_EXTERN_C const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule;
 const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule = 
 {
 	"Assembly-CSharp.dll",
-	64,
+	81,
 	s_methodPointers,
 	0,
 	NULL,
