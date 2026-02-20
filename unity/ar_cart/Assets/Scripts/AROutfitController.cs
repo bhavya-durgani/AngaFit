@@ -1,29 +1,40 @@
 using UnityEngine;
 using UnityEngine.Video;
-using FlutterUnityIntegration;
 using System.Collections.Generic;
+using FlutterUnityIntegration;
 
 public class AROutfitController : MonoBehaviour
 {
-    public VideoPlayer videoBackground; // Assign a VideoPlayer in Inspector
+    public VideoPlayer videoPlayer; // Link this in the Inspector
     public List<GameObject> clothingPrefabs;
     private GameObject currentOutfit;
 
-    // Called by Flutter to set the recorded video as background
+    // Flutter calls this with the path: /data/user/0/com.example.../video.mp4
     public void SetVideoBackground(string path)
     {
-        videoBackground.url = path;
-        videoBackground.Play();
+        // Ensure path starts with file:// for local files
+        if (!path.StartsWith("file://")) {
+            path = "file://" + path;
+        }
+
+        videoPlayer.url = path;
+        videoPlayer.isLooping = true;
+        videoPlayer.Play();
+
+        Debug.Log("Playing recorded video from: " + path);
     }
 
     public void ChangeOutfit(string outfitId)
     {
         if (currentOutfit != null) Destroy(currentOutfit);
+
         GameObject prefab = clothingPrefabs.Find(p => p.name == outfitId);
         if (prefab != null) {
-            currentOutfit = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-            // In video mode, the outfit stays centered while the person in the video turns
-            currentOutfit.transform.position = new Vector3(0, 0, 5);
+            // Position the outfit in front of the camera
+            currentOutfit = Instantiate(prefab, new Vector3(0, -1, 5), Quaternion.identity);
+
+            // Send message back to Flutter when ready
+            UnityMessageManager.Instance.SendMessageToFlutter("LOADED");
         }
     }
 }
