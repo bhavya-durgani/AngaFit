@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
-  final String name, brand, imageUrl, description, composition, care;
+  final String name, brand, imageUrl, description, composition, care, unityModelUrl;
   final double price;
   final List<String> availableSizes;
   final List<String> availableColors;
@@ -14,6 +14,7 @@ class Product {
     required this.description,
     required this.composition,
     required this.care,
+    required this.unityModelUrl,
     required this.availableSizes,
     required this.availableColors,
   });
@@ -25,10 +26,10 @@ class Product {
       brand: data['brand'] ?? '',
       price: (data['price'] ?? 0).toDouble(),
       imageUrl: data['imageUrl'] ?? '',
-      description: data['description'] ?? 'No description provided.',
-      composition: data['composition'] ?? '100% Cotton',
-      care: data['care'] ?? 'Machine wash cold',
-      // NEW FIELDS
+      description: data['description'] ?? '',
+      composition: data['composition'] ?? '',
+      care: data['care'] ?? '',
+      unityModelUrl: data['unityModelUrl'] ?? '',
       availableSizes: List<String>.from(data['availableSizes'] ?? []),
       availableColors: List<String>.from(data['availableColors'] ?? []),
     );

@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/dummy_data.dart';
 import '../../data/services/database_service.dart';
-import '../ar_view/ar_video_training_screen.dart'; // REDIRECT TO TRAINING FIRST
+import '../ar_view/ar_video_training_screen.dart';
 import '../checkout/checkout_screen.dart';
 import '../reviews/reviews_screen.dart';
 
@@ -21,6 +21,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   String selectedSize = "M";
   bool isFavorite = false;
   int quantity = 1;
+  bool _isAdding = false;
   final uid = FirebaseAuth.instance.currentUser?.uid;
 
   @override
@@ -49,15 +50,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 1. PRODUCT IMAGE (Floating Heart Icon)
             Stack(
               children: [
                 CachedNetworkImage(
                   imageUrl: widget.product.imageUrl,
-                  height: 400, width: double.infinity, fit: BoxFit.cover,
+                  height: 400,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                   placeholder: (context, url) => Container(color: Colors.grey[200]),
                 ),
                 Positioned(
-                  top: 20, right: 16,
+                  top: 20,
+                  right: 16,
                   child: GestureDetector(
                     onTap: () async {
                       await DatabaseService().toggleFavorite(widget.product);
@@ -65,64 +70,93 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                      child: Icon(isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: isFavorite ? Colors.red : AppColors.grey, size: 28),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                      ),
+                      child: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : AppColors.grey,
+                        size: 28,
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
+
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // 2. BRAND & RED TRY ON BUTTON
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(widget.product.brand, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                          Text(widget.product.name, style: const TextStyle(color: AppColors.grey, fontSize: 16)),
-                        ],
-                      ),
-                      // RED TRY ON BUTTON - NOW REDIRECTS TO TRAINING
+                      Text(widget.product.brand, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                       GestureDetector(
                         onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => ARVideoTrainingScreen(modelName: widget.product.name)
-                            )
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ARVideoTrainingScreen(
+                              modelName: widget.product.name,
+                              modelUrl: widget.product.unityModelUrl,
+                            ),
+                          ),
                         ),
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(color: AppColors.primaryRed, borderRadius: BorderRadius.circular(20)),
-                          child: const Row(children: [
-                            Icon(Icons.videocam, color: Colors.white, size: 16),
-                            SizedBox(width: 6),
-                            Text("Try On", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
-                          ]),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryRed,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.view_in_ar, color: Colors.white, size: 16),
+                              SizedBox(width: 6),
+                              Text("Try On", style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
+
+                  // 3. DRESS NAME
+                  Text(widget.product.name, style: const TextStyle(color: AppColors.grey, fontSize: 16)),
                   const SizedBox(height: 12),
-                  Text("₹${widget.product.price.toStringAsFixed(0)}",
-                      style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.primaryRed)),
+
+                  // 4. PRICE TAG (Below Name)
+                  Text(
+                    "₹${widget.product.price.toStringAsFixed(0)}",
+                    style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: AppColors.primaryRed),
+                  ),
                   const SizedBox(height: 12),
+
+                  // 5. REVIEWS (Below Price)
                   InkWell(
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ReviewsScreen())),
-                    child: const Row(children: [
-                      Icon(Icons.star, color: Colors.amber, size: 18),
-                      Icon(Icons.star, color: Colors.amber, size: 18),
-                      Icon(Icons.star_half, color: Colors.amber, size: 18),
-                      SizedBox(width: 4),
-                      Text("(12 ratings)")
-                    ]),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber, size: 18),
+                        Icon(Icons.star, color: Colors.amber, size: 18),
+                        Icon(Icons.star, color: Colors.amber, size: 18),
+                        Icon(Icons.star, color: Colors.amber, size: 18),
+                        Icon(Icons.star_half, color: Colors.amber, size: 18),
+                        SizedBox(width: 4),
+                        Text("(12 ratings)", style: TextStyle(color: AppColors.grey, fontSize: 12)),
+                        Spacer(),
+                        Icon(Icons.chevron_right, color: AppColors.grey),
+                      ],
+                    ),
                   ),
+
                   const SizedBox(height: 24),
+
+                  // 6. SIZE SELECTION (Above Expandables)
                   const Text("Select Size", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                   const SizedBox(height: 12),
                   SizedBox(
@@ -133,28 +167,74 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       itemBuilder: (context, index) => _buildSizeChip(widget.product.availableSizes[index]),
                     ),
                   ),
+
+                  const SizedBox(height: 24),
+
+                  // 7. QUANTITY SELECTION
+                  const Text("Quantity", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _qtyIcon(Icons.remove, () {
+                        setState(() {
+                          if (quantity > 1) quantity--;
+                        });
+                      }),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text("$quantity", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      ),
+                      _qtyIcon(Icons.add, () {
+                        setState(() {
+                          quantity++;
+                        });
+                      }),
+                    ],
+                  ),
+
                   const SizedBox(height: 32),
+
+                  // 8. EXPANDABLE INFO SECTIONS
                   _buildExpandableSection("Description", widget.product.description),
+                  const Divider(),
                   _buildExpandableSection("Composition", widget.product.composition),
+                  const Divider(),
                   _buildExpandableSection("Care Instructions", widget.product.care),
+
                   const SizedBox(height: 40),
+
+                  // 9. BOTTOM ACTION BUTTONS
                   Row(
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: () async {
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: AppColors.primaryRed),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          ),
+                          onPressed: _isAdding ? null : () async {
+                            setState(() => _isAdding = true);
                             await DatabaseService().addToCart(widget.product, selectedSize, quantity);
+                            setState(() => _isAdding = false);
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Added to Bag!")));
                           },
-                          child: const Text("ADD TO BAG"),
+                          child: _isAdding
+                              ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                              : const Text("ADD TO BAG", style: TextStyle(color: AppColors.primaryRed, fontWeight: FontWeight.bold)),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => CheckoutScreen(total: widget.product.price, count: 1))
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CheckoutScreen(
+                                total: widget.product.price * quantity,
+                                count: quantity,
+                              ),
+                            ),
                           ),
                           child: const Text("BUY NOW"),
                         ),
@@ -171,27 +251,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
+  Widget _qtyIcon(IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.grey.shade300)),
+        child: Icon(icon, size: 20),
+      ),
+    );
+  }
+
   Widget _buildSizeChip(String size) {
     bool isSelected = selectedSize == size;
     return GestureDetector(
       onTap: () => setState(() => selectedSize = size),
       child: Container(
-        width: 50, margin: const EdgeInsets.only(right: 12),
+        width: 50,
+        margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
             color: isSelected ? AppColors.primaryRed : Colors.white,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: isSelected ? AppColors.primaryRed : Colors.grey.shade300)
-        ),
-        child: Center(child: Text(size, style: TextStyle(color: isSelected ? Colors.white : Colors.black, fontWeight: FontWeight.bold))),
+            border: Border.all(color: isSelected ? AppColors.primaryRed : Colors.grey.shade300)),
+        child: Center(
+            child: Text(size, style: TextStyle(color: isSelected ? Colors.white : Colors.black, fontWeight: FontWeight.bold))),
       ),
     );
   }
 
   Widget _buildExpandableSection(String title, String content) {
     return ExpansionTile(
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-        children: [Padding(padding: const EdgeInsets.all(16), child: Text(content))],
-        tilePadding: EdgeInsets.zero
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+      children: [Padding(padding: const EdgeInsets.all(16), child: Text(content, style: const TextStyle(height: 1.5)))],
+      tilePadding: EdgeInsets.zero,
     );
   }
 }

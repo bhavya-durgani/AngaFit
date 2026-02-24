@@ -37,15 +37,22 @@ android {
     }
 
     buildTypes {
-        debug {
-            isMinifyEnabled = false
-            isShrinkResources = false
-        }
-
-        release {
-            isMinifyEnabled = false
-            isShrinkResources = false
+        getByName("release") {
+            // This is where you link the file
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             signingConfig = signingConfigs.getByName("debug")
+        }
+        getByName("debug") {
+            isMinifyEnabled = false
+            // Optional: you can link it here too if you want to test shrinking in debug
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 }

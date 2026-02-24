@@ -71,6 +71,7 @@
     <Compile Include="Assets\FlutterUnityIntegration\Demo\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\ModelDownloader.cs" />
     <Compile Include="Assets\FlutterUnityIntegration\UnityMessageManager.cs" />
+    <Compile Include="Assets\Scripts\ARManager.cs" />
     <Compile Include="Assets\FlutterUnityIntegration\Demo\Rotate.cs" />
   </ItemGroup>
   <ItemGroup>

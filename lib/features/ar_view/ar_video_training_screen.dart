@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import '../../core/constants/app_colors.dart';
 import 'ar_try_on_screen.dart';
 
 class ARVideoTrainingScreen extends StatefulWidget {
   final String modelName;
-  const ARVideoTrainingScreen({super.key, required this.modelName});
+  final String modelUrl;
+
+  const ARVideoTrainingScreen({super.key, required this.modelName, required this.modelUrl});
 
   @override
   State<ARVideoTrainingScreen> createState() => _ARVideoTrainingScreenState();
@@ -22,43 +23,47 @@ class _ARVideoTrainingScreenState extends State<ARVideoTrainingScreen> {
     "Slowly turn to your LEFT",
     "Slowly turn to your RIGHT",
     "Turn around COMPLETELY (360°)",
-    "Processing your fit..."
+    "Finalizing video..."
   ];
 
   @override
   void initState() {
     super.initState();
-    _initializeCamera();
+    _initCamera();
   }
 
-  Future<void> _initializeCamera() async {
+  Future<void> _initCamera() async {
     final cameras = await availableCameras();
-    _controller = CameraController(cameras[0], ResolutionPreset.high);
+    _controller = CameraController(cameras[0], ResolutionPreset.medium, enableAudio: false);
     await _controller!.initialize();
     if (mounted) setState(() {});
   }
 
-  Future<void> _startRecordingSequence() async {
+  Future<void> _startCapture() async {
     setState(() => _isRecording = true);
     await _controller!.startVideoRecording();
 
-    // Sequence logic
     for (int i = 0; i < 4; i++) {
       setState(() => _currentStep = i);
       await Future.delayed(const Duration(seconds: 4));
     }
 
-    XFile videoFile = await _controller!.stopVideoRecording();
+    XFile video = await _controller!.stopVideoRecording();
     setState(() => _currentStep = 4);
 
-    // Redirect to Unity View with the recorded video
+    // CRITICAL FIX: Dispose and wait for 1 second
+    await _controller?.dispose();
+    _controller = null;
+    await Future.delayed(const Duration(seconds: 1));
+
     if (mounted) {
+      // Navigate to Unity
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => ARTryOnScreen(
-            modelName: widget.modelName,
-            videoPath: videoFile.path,
+            modelUrl: widget.modelUrl,
+            videoPath: video.path,
           ),
         ),
       );
@@ -70,35 +75,25 @@ class _ARVideoTrainingScreenState extends State<ARVideoTrainingScreen> {
     if (_controller == null || !_controller!.value.isInitialized) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
           CameraPreview(_controller!),
-          // UI OVERLAY
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 60),
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(20)),
-                  child: Text(
-                    _prompts[_currentStep],
-                    style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  child: Text(_prompts[_currentStep], style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                 ),
                 const Spacer(),
                 if (!_isRecording)
-                  ElevatedButton(
-                    onPressed: _startRecordingSequence,
-                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryRed, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
-                    child: const Text("START 360° CAPTURE"),
-                  ),
-                if (_isRecording && _currentStep < 4)
-                  const CircularProgressIndicator(color: AppColors.primaryRed),
+                  ElevatedButton(onPressed: _startCapture, child: const Text("START CAPTURE")),
+                if (_isRecording) const CircularProgressIndicator(color: AppColors.primaryRed),
               ],
             ),
           ),

@@ -582,17 +582,17 @@ VideoPlayer:
   m_VideoClip: {fileID: 0}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
-  m_TargetCamera: {fileID: 0}
+  m_TargetCamera: {fileID: 40919620}
   m_TargetTexture: {fileID: 0}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: <noninit>
-  m_RenderMode: 2
+  m_RenderMode: 0
   m_AspectRatio: 2
-  m_DataSource: 0
+  m_DataSource: 1
   m_TimeUpdateMode: 2
   m_PlaybackSpeed: 1
-  m_AudioOutputMode: 2
+  m_AudioOutputMode: 0
   m_TargetAudioSources:
   - {fileID: 0}
   m_DirectAudioVolumes:
@@ -601,7 +601,7 @@ VideoPlayer:
   m_EnabledAudioTracks: 01
   m_DirectAudioMutes: 00
   m_ControlledAudioTrackCount: 1
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_SkipOnDrop: 1
   m_Looping: 0
   m_WaitForFirstFrame: 1
@@ -698,9 +698,71 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b15a24fa9b91fe4bb08316a68ff377c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoPlayer: {fileID: 0}
+  backgroundVideo: {fileID: 1441859694}
   clothingPrefabs:
-  - {fileID: 0}
+  - {fileID: 4244369144688807196}
+--- !u!1001 &4244369144688807195
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4175658132144954882, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6595007169734560855, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+      propertyPath: m_Name
+      value: silk_dress_v1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+--- !u!1 &4244369144688807196 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6595007169734560855, guid: dbd1894140110ae42b96aa72397c3265, type: 3}
+  m_PrefabInstance: {fileID: 4244369144688807195}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -710,3 +772,4 @@ SceneRoots:
   - {fileID: 782628378}
   - {fileID: 2037588057}
   - {fileID: 1441859695}
+  - {fileID: 4244369144688807195}
