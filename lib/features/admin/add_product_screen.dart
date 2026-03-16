@@ -23,6 +23,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       'composition': "100% Organic Cotton",
       'care': "Machine wash cold",
     });
+    if (!mounted) return;
     Navigator.pop(context);
   }
 

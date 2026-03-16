@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 
 class RatingsReviewsScreen extends StatelessWidget {
+  const RatingsReviewsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,11 +62,11 @@ class RatingsReviewsScreen extends StatelessWidget {
   }
 
   Widget _buildReviewItem() {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Helene Moore", style: TextStyle(fontWeight: FontWeight.bold)),
-        const Row(
+        Text("Helene Moore", style: TextStyle(fontWeight: FontWeight.bold)),
+        Row(
           children: [
             Icon(Icons.star, color: Colors.amber, size: 14),
             Icon(Icons.star, color: Colors.amber, size: 14),
@@ -73,8 +75,8 @@ class RatingsReviewsScreen extends StatelessWidget {
             Text("June 5, 2019", style: TextStyle(color: AppColors.grey, fontSize: 11)),
           ],
         ),
-        const SizedBox(height: 10),
-        const Text("The dress is great! Very classy and comfortable. It fits perfectly! I'm 5'7\" and 130 pounds. I am a 34B chest. This dress would be too long for those who are shorter but could be hemmed."),
+        SizedBox(height: 10),
+        Text("The dress is great! Very classy and comfortable. It fits perfectly! I'm 5'7\" and 130 pounds. I am a 34B chest. This dress would be too long for those who are shorter but could be hemmed."),
       ],
     );
   }

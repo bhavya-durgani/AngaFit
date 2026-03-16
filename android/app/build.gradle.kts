@@ -10,18 +10,18 @@ plugins {
 }
 
 android {
-    namespace = "com.example.angafit"
+    namespace = "com.example.AngaFit"
     compileSdk = 36
 
     ndkVersion = "27.3.13750724"
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
     defaultConfig {
@@ -31,7 +31,6 @@ android {
         versionCode = 1
         versionName = "1.0"
         ndk {
-            abiFilters.add("armeabi-v7a")
             abiFilters.add("arm64-v8a")
         }
     }
@@ -62,5 +61,6 @@ flutter {
 }
 
 dependencies {
+    implementation("com.google.android.material:material:1.12.0")
     implementation(project(":unityLibrary"))
 }

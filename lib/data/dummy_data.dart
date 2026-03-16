@@ -41,4 +41,4 @@ class Order {
   Order({required this.id, required this.date, required this.status, required this.amount, required this.imageUrl});
 }
 
-final List<String> appCategories = ["All", "Women", "Men", "Kids"];
+final List<String> appCategories = ["All", "Women", "Men", "Kids", "Work"];

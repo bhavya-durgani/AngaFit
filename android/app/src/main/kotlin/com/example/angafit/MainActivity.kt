@@ -1,4 +1,4 @@
-package com.example.angafit
+package com.example.AngaFit
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

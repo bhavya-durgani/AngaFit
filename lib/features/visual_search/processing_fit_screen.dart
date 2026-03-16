@@ -30,21 +30,21 @@ class _ProcessingFitScreenState extends State<ProcessingFitScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: AppColors.background,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.search, size: 80, color: AppColors.primaryRed),
-            const SizedBox(height: 30),
-            const Text(
+            Icon(Icons.search, size: 80, color: AppColors.primaryRed),
+            SizedBox(height: 30),
+            Text(
               "Processing\nyour fit",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 34, fontWeight: FontWeight.w900, height: 1.2),
             ),
-            const SizedBox(height: 40),
-            const CircularProgressIndicator(color: AppColors.primaryRed),
+            SizedBox(height: 40),
+            CircularProgressIndicator(color: AppColors.primaryRed),
           ],
         ),
       ),

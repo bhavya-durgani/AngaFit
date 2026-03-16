@@ -1,3 +1,5 @@
+import org.gradle.api.JavaVersion
+
 allprojects {
     repositories {
         google()
@@ -28,7 +30,20 @@ subprojects {
                     android.namespace = "com.xraph.plugin.flutter_unity_widget"
                 } else {
                     // Fallback for any other plugins with this error
-                    android.namespace = "com.example.angafit.${project.name.replace("-", "_")}"
+                    android.namespace = "com.example.AngaFit.${project.name.replace("-", "_")}"
+                }
+            }
+
+            // FIX 3: Align Java and Kotlin JVM targets to prevent mismatch errors
+            android.compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_11
+                targetCompatibility = JavaVersion.VERSION_11
+            }
+
+            // FIX 4: Also force Kotlin jvmTarget to match Java (11)
+            tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+                compilerOptions {
+                    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
                 }
             }
         }
@@ -44,5 +59,5 @@ subprojects {
 }
 
 tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(layout.buildDirectory)
 }

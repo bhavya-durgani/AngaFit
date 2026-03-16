@@ -5,7 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/dummy_data.dart';
 import '../../data/services/database_service.dart';
-import '../ar_view/ar_video_training_screen.dart';
+import '../ar_view/ar_try_on_screen.dart';
+import '../ar_view/three_sixty_capture_screen.dart';
 import '../checkout/checkout_screen.dart';
 import '../reviews/reviews_screen.dart';
 
@@ -100,9 +101,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ARVideoTrainingScreen(
-                              modelName: widget.product.name,
-                              modelUrl: widget.product.unityModelUrl,
+                            builder: (_) => ARTryOnScreen(
+                              product: widget.product,
+                              initialSize: selectedSize,
                             ),
                           ),
                         ),
@@ -115,9 +116,38 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.view_in_ar, color: Colors.white, size: 16),
+                              Icon(Icons.auto_awesome, color: Colors.white, size: 16),
                               SizedBox(width: 6),
                               Text("Try On", style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ThreeSixtyCaptureScreen(
+                              product: widget.product,
+                              selectedSize: selectedSize,
+                              garmentImageUrl: widget.product.imageUrl,
+                            ),
+                          ),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: AppColors.primaryRed, width: 1.5),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.threesixty, color: AppColors.primaryRed, size: 16),
+                              SizedBox(width: 6),
+                              Text("360°", style: TextStyle(color: AppColors.primaryRed, fontSize: 12, fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),

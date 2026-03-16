@@ -6,13 +6,12 @@ class SubCategoriesScreen extends StatelessWidget {
   final String categoryName;
   const SubCategoriesScreen({super.key, required this.categoryName});
 
-  final List<String> subCategories = [
-    "Tops", "Shirts & Blouses", "Cardigans & Sweaters",
-    "Knitwear", "Blazers", "Outerwear", "Pants", "Jeans"
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final List<String> subCategories = [
+      'Tops', 'Shirts & Blouses', 'Cardigans & Sweaters',
+      'Knitwear', 'Blazers', 'Outerwear', 'Pants', 'Jeans'
+    ];
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryName),

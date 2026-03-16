@@ -7,6 +7,8 @@ import 'core/utils/cart_provider.dart';
 import 'features/splash/splash_screen.dart';
 import 'firebase_options.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 void main() async {
   // 1. Ensure Flutter framework is initialized
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +18,8 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    // TEMPORARY CLEANUP: Remove "Floral Summer Dress" from live database
+    await FirebaseFirestore.instance.collection('products').doc('Floral Summer Dress').delete();
   } catch (e) {
     debugPrint("Firebase Initialization Error: $e");
   }

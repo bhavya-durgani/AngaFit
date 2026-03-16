@@ -72,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Text(
               "AR Style Hub",
               style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: 16,
               ),
             ),

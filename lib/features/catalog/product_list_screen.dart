@@ -8,7 +8,8 @@ import 'widgets/sort_bottom_sheet.dart';
 import 'widgets/filter_bottom_sheet.dart';
 
 class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
+  final String? searchQuery;
+  const ProductListScreen({super.key, this.searchQuery});
   @override State<ProductListScreen> createState() => _ProductListScreenState();
 }
 
@@ -16,6 +17,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
   String activeCategory = "All";
   String sortMethod = "Newest"; // Current sort state
   RangeValues currentRange = const RangeValues(0, 10000);
+  String? selectedSize;
+  String? selectedColor;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +36,22 @@ class _ProductListScreenState extends State<ProductListScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _barBtn(Icons.filter_list, "Filters", () async {
-                  final result = await showModalBottomSheet(context: context, isScrollControlled: true, builder: (_) => FilterBottomSheet(initialRange: currentRange));
-                  if (result != null) setState(() => currentRange = result);
+                  final result = await showModalBottomSheet(
+                    context: context, 
+                    isScrollControlled: true, 
+                    builder: (_) => FilterBottomSheet(
+                      initialRange: currentRange,
+                      initialSize: selectedSize,
+                      initialColor: selectedColor,
+                    )
+                  );
+                  if (result != null && result is Map) {
+                    setState(() {
+                      currentRange = result['range'] ?? const RangeValues(0, 10000);
+                      selectedSize = result['size'];
+                      selectedColor = result['color'];
+                    });
+                  }
                 }),
                 // SORT BUTTON: Now updates the state
                 _barBtn(Icons.swap_vert, sortMethod, () async {
@@ -62,11 +79,22 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 List<DocumentSnapshot> items = snapshot.data!.docs.where((doc) {
                   final data = doc.data() as Map<String, dynamic>;
                   final price = (data['price'] ?? 0).toDouble();
-                  final cat = data['category'] ?? "All";
+                  final cat = data['category'] ?? 'All';
+                  final name = (data['name'] ?? '').toString().toLowerCase();
+                  final brand = (data['brand'] ?? '').toString().toLowerCase();
+                  final List<dynamic> sizes = data['availableSizes'] ?? [];
+                  final List<dynamic> colors = data['availableColors'] ?? [];
 
-                  bool matchCat = activeCategory == "All" || cat == activeCategory;
+                  bool matchCat = activeCategory == 'All' || cat == activeCategory;
                   bool matchPrice = price >= currentRange.start && price <= currentRange.end;
-                  return matchCat && matchPrice;
+                  bool matchSearch = widget.searchQuery == null ||
+                      name.contains(widget.searchQuery!.toLowerCase()) ||
+                      brand.contains(widget.searchQuery!.toLowerCase());
+                      
+                  bool matchSize = selectedSize == null || sizes.contains(selectedSize);
+                  bool matchColor = selectedColor == null || colors.any((c) => c.toString().toLowerCase() == selectedColor!.toLowerCase());
+
+                  return matchCat && matchPrice && matchSearch && matchSize && matchColor;
                 }).toList();
 
                 // 2. APPLY SORTING LOGIC
@@ -111,3 +139,4 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   Widget _barBtn(IconData i, String l, VoidCallback t) => InkWell(onTap: t, child: Row(children: [Icon(i, size: 20), const SizedBox(width: 8), Text(l, style: const TextStyle(fontSize: 12))]));
 }
+

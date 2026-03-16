@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -50,19 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDlHUIbWsxJNt2YlcaY0UmfbShhw3lctxU',
-    appId: '1:746067234274:android:25bfd41ae86a92f85ebdbb',
-    messagingSenderId: '746067234274',
-    projectId: 'angafir-afaf7',
-    storageBucket: 'angafir-afaf7.firebasestorage.app',
+    apiKey: 'AIzaSyAY0bslR947EUqQn0TN6aDjr7kM0H9ddrw',
+    appId: '1:951060218171:android:9adcd06a512e95b844b71e',
+    messagingSenderId: '951060218171',
+    projectId: 'angafit-f7d6e',
+    storageBucket: 'angafit-f7d6e.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBeMiwRkFKIoFJz_XQwNZKPeQ9pxxQZmag',
-    appId: '1:746067234274:ios:952e22ae6ecb43f55ebdbb',
-    messagingSenderId: '746067234274',
-    projectId: 'angafir-afaf7',
-    storageBucket: 'angafir-afaf7.firebasestorage.app',
+    apiKey: 'AIzaSyD12-XVUbgTkd0CDZ6aVj4CYB3jVnZYPPA',
+    appId: '1:951060218171:ios:6886998e2f52c38c44b71e',
+    messagingSenderId: '951060218171',
+    projectId: 'angafit-f7d6e',
+    storageBucket: 'angafit-f7d6e.firebasestorage.app',
     iosBundleId: 'com.example.AngaFit',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCfCWjx5eOlWZ19bH5jlJGr0H2f0FSpMLI',
+    appId: '1:951060218171:web:7fbe87b41ef00c9a44b71e',
+    messagingSenderId: '951060218171',
+    projectId: 'angafit-f7d6e',
+    authDomain: 'angafit-f7d6e.firebaseapp.com',
+    storageBucket: 'angafit-f7d6e.firebasestorage.app',
+    measurementId: 'G-THCKME0NXK',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyD12-XVUbgTkd0CDZ6aVj4CYB3jVnZYPPA',
+    appId: '1:951060218171:ios:38dc8aa6065c0c8e44b71e',
+    messagingSenderId: '951060218171',
+    projectId: 'angafit-f7d6e',
+    storageBucket: 'angafit-f7d6e.firebasestorage.app',
+    iosBundleId: 'com.example.angafit',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCfCWjx5eOlWZ19bH5jlJGr0H2f0FSpMLI',
+    appId: '1:951060218171:web:e3aee135ae7b16fe44b71e',
+    messagingSenderId: '951060218171',
+    projectId: 'angafit-f7d6e',
+    authDomain: 'angafit-f7d6e.firebaseapp.com',
+    storageBucket: 'angafit-f7d6e.firebasestorage.app',
+    measurementId: 'G-6Q9RN4LMDG',
+  );
+
 }

@@ -8,6 +8,8 @@ class CategoriesScreen extends StatelessWidget {
     {"name": "Kids", "image": "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea"},
   ];
 
+  CategoriesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

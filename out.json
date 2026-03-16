@@ -1,0 +1,8 @@
+data: {"msg":"estimation","event_id":"8c9b6e9053894804a2deec75dc050759","rank":0,"queue_size":1,"rank_eta":23.622014799686237}
+
+data: {"msg":"process_starts","event_id":"8c9b6e9053894804a2deec75dc050759","eta":23.622014799686237}
+
+data: {"msg":"process_completed","event_id":"8c9b6e9053894804a2deec75dc050759","output":{"error":null},"success":false}
+
+data: {"msg":"close_stream"}
+

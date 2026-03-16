@@ -1,0 +1,6 @@
+data: {"msg":"process_starts","event_id":"c46d39105eb44ccf8f8d470f986c3225","eta":null}
+
+data: {"msg":"process_completed","event_id":"c46d39105eb44ccf8f8d470f986c3225","output":{"error":null},"success":false}
+
+data: {"msg":"close_stream"}
+

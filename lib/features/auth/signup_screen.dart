@@ -29,6 +29,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
         }
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(backgroundColor: AppColors.error, content: Text(ErrorHandler.getErrorMessage(e))),
         );
@@ -85,7 +86,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _buildField(String l, TextEditingController c, String? Function(String?) v, {bool isPass = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2))]),
       child: TextFormField(controller: c, validator: v, obscureText: isPass, decoration: InputDecoration(labelText: l, border: InputBorder.none, errorStyle: const TextStyle(color: AppColors.error))),
     );
   }
