@@ -94,8 +94,8 @@ class _ThreeSixtyCaptureScreenState extends State<ThreeSixtyCaptureScreen>
     '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',
     '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',
     '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',
-    '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'
-
+    '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',
+    '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'
   ];
 
   /// FIX: Each concurrent frame gets its own token index to avoid

@@ -67,7 +67,7 @@ class _ARTryOnScreenState extends State<ARTryOnScreen>
   // 2. Create a "Read" token: https://huggingface.co/settings/tokens
   // 3. Paste it below:
   // static const String _hfToken = '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'; // e.g. 'hf_xxxxxxxxxxxxxxxxxxxx'
-  static const String _hfToken = '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'; // e.g. 'hf_xxxxxxxxxxxxxxxxxxxx'
+  static const String _hfToken = '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'; // e.g. 'hf_xxxxxxxxxxxxxxxxxxxx'
 
   /// Returns headers with Authorization if _hfToken is set, else basic headers.
   Map<String, String> get _joinHeaders => {
