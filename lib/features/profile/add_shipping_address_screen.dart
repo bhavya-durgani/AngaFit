@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/constants/app_colors.dart';
+import '../../data/services/database_service.dart';
 
 class AddShippingAddressScreen extends StatefulWidget {
   const AddShippingAddressScreen({super.key});
@@ -9,74 +8,108 @@ class AddShippingAddressScreen extends StatefulWidget {
 }
 
 class _AddShippingAddressScreenState extends State<AddShippingAddressScreen> {
-  final _nameCtrl = TextEditingController();
-  final _addressCtrl = TextEditingController();
-  final _cityCtrl = TextEditingController();
-  final _stateCtrl = TextEditingController();
-  final _zipCtrl = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _nameCtrl    = TextEditingController();
+  final _streetCtrl  = TextEditingController();
+  final _cityCtrl    = TextEditingController();
+  final _stateCtrl   = TextEditingController();
+  final _zipCtrl     = TextEditingController();
+  String _selectedLabel = 'Home';
+  bool _saving = false;
 
   Future<void> _saveAddress() async {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) return;
-
-    if (_nameCtrl.text.isEmpty || _addressCtrl.text.isEmpty || _cityCtrl.text.isEmpty) {
-       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please fill all fields")));
-       return;
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _saving = true);
+    try {
+      await DatabaseService().addAddress({
+        'label':  _selectedLabel,
+        'name':   _nameCtrl.text.trim(),
+        'street': _streetCtrl.text.trim(),
+        'city':   _cityCtrl.text.trim(),
+        'state':  _stateCtrl.text.trim(),
+        'zip':    _zipCtrl.text.trim(),
+      });
+      if (mounted) Navigator.pop(context);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
-
-    await FirebaseFirestore.instance.collection('users').doc(uid).collection('addresses').add({
-      'name': _nameCtrl.text.trim(),
-      'address': _addressCtrl.text.trim(),
-      'city': _cityCtrl.text.trim(),
-      'state': _stateCtrl.text.trim(),
-      'zip': _zipCtrl.text.trim(),
-      'isDefault': false,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-
-    if (mounted) Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text("Adding Shipping Address")),
+      appBar: AppBar(title: const Text('Add Shipping Address'), centerTitle: true),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            _input("Full name", _nameCtrl),
-            const SizedBox(height: 16),
-            _input("Address", _addressCtrl),
-            const SizedBox(height: 16),
-            _input("City", _cityCtrl),
-            const SizedBox(height: 16),
-            _input("State/Province/Region", _stateCtrl),
-            const SizedBox(height: 16),
-            _input("Zip Code", _zipCtrl),
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _saveAddress,
-                child: const Text("SAVE ADDRESS"),
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Label', style: TextStyle(color: AppColors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                children: ['Home', 'Work', 'Office', 'Other'].map((lbl) {
+                  final selected = _selectedLabel == lbl;
+                  return ChoiceChip(
+                    label: Text(lbl),
+                    selected: selected,
+                    onSelected: (_) => setState(() => _selectedLabel = lbl),
+                    selectedColor: AppColors.primaryRed,
+                    labelStyle: TextStyle(color: selected ? Colors.white : Colors.black),
+                  );
+                }).toList(),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              _field('Recipient Name', _nameCtrl),
+              _field('Street Address', _streetCtrl),
+              Row(
+                children: [
+                  Expanded(child: _field('City', _cityCtrl)),
+                  const SizedBox(width: 12),
+                  Expanded(child: _field('ZIP Code', _zipCtrl, isNum: true)),
+                ],
+              ),
+              _field('State / Province', _stateCtrl),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _saving ? null : _saveAddress,
+                  child: _saving
+                      ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : const Text('SAVE ADDRESS'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _input(String label, TextEditingController controller) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)),
-      child: TextField(
-          controller: controller,
-          decoration: InputDecoration(labelText: label, border: InputBorder.none)
+  Widget _field(String label, TextEditingController ctrl, {bool isNum = false}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: TextFormField(
+        controller: ctrl,
+        keyboardType: isNum ? TextInputType.number : TextInputType.text,
+        validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+        decoration: InputDecoration(
+          labelText: label,
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        ),
       ),
     );
   }

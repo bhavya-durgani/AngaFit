@@ -283,10 +283,47 @@ exports.getTryOnStatus = functions
 // STRIPE INTEGRATION
 // Creates a PaymentIntent and returns the client_secret securely to the app.
 // ─────────────────────────────────────────────────────────────────────────────
+exports.getStripeAccountLink = functions
+  .runWith({ timeoutSeconds: 60 })
+  .https.onCall(async (data, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError("unauthenticated", "Must be logged in.");
+    }
+    const uid = context.auth.uid;
+    
+    try {
+      // 1. Check if user already has a Stripe Account ID
+      const userDocRef = admin.firestore().collection("users").doc(uid);
+      const userDoc = await userDocRef.get();
+      let stripeAccountId = null;
+      
+      if (userDoc.exists && userDoc.data().stripeAccountId) {
+        stripeAccountId = userDoc.data().stripeAccountId;
+      } else {
+        // 2. Create new Express account
+        const account = await stripe.accounts.create({ type: 'express' });
+        stripeAccountId = account.id;
+        await userDocRef.set({ stripeAccountId }, { merge: true });
+      }
+
+      // 3. Create Account Link for onboarding
+      const accountLink = await stripe.accountLinks.create({
+        account: stripeAccountId,
+        refresh_url: 'https://angafit-f7d6e.web.app', 
+        return_url: 'https://angafit-f7d6e.web.app',  
+        type: 'account_onboarding',
+      });
+
+      return { url: accountLink.url };
+    } catch (error) {
+      console.error("[getStripeAccountLink] Error:", error.message);
+      throw new functions.https.HttpsError("internal", "Unable to create Stripe account link.");
+    }
+  });
+
 exports.createStripePaymentIntent = functions
   .runWith({ timeoutSeconds: 60 })
   .https.onCall(async (data, context) => {
-      // You can add context.auth checking here if you want to force login
       const { amount, currency } = data;
       
       if (!amount) {
@@ -294,13 +331,33 @@ exports.createStripePaymentIntent = functions
       }
 
       try {
-          const paymentIntent = await stripe.paymentIntents.create({
+          // Find the admin's Stripe Account ID
+          const adminSnapshot = await admin.firestore().collection('users')
+            .where('stripeAccountId', '!=', null)
+            .limit(1)
+            .get();
+          
+          let destinationAccountId = null;
+          if (!adminSnapshot.empty) {
+              destinationAccountId = adminSnapshot.docs[0].data().stripeAccountId;
+          }
+
+          const params = {
               amount: parseInt(amount, 10), // amount in cents/paise
               currency: currency || "INR",
               automatic_payment_methods: {
                 enabled: true,
               },
-          });
+          };
+
+          if (destinationAccountId) {
+            // Transfer funds to the connected account
+            params.transfer_data = {
+                destination: destinationAccountId,
+            };
+          }
+
+          const paymentIntent = await stripe.paymentIntents.create(params);
 
           return {
               client_secret: paymentIntent.client_secret,

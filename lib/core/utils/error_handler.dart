@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class ErrorHandler {
   static String getErrorMessage(dynamic e) {
@@ -25,7 +26,21 @@ class ErrorHandler {
       }
     } else if (e is FirebaseException) {
       return 'Database error: ${e.message}';
+    } else if (e is PlatformException) {
+      // Google Sign-In throws PlatformException (e.g. sign_in_failed)
+      final code = e.code;
+      final detail = e.message ?? '';
+      if (code == 'sign_in_canceled' || code == 'canceled') {
+        return 'Sign-in was cancelled.';
+      }
+      if (detail.contains('10:') || code == 'sign_in_failed') {
+        return 'Google Sign-In failed (developer error 10).\nSHA-1 fingerprint not registered in Firebase.\nCode: $code';
+      }
+      if (detail.contains('7:') || detail.contains('network')) {
+        return 'Network error. Please check your internet connection.';
+      }
+      return 'Google Sign-In error ($code): $detail';
     }
-    return 'Something went wrong. Please try again.';
+    return 'Error: ${e.toString()}';
   }
 }

@@ -73,7 +73,34 @@ class _ProductListScreenState extends State<ProductListScreen> {
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance.collection('products').snapshots(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+                // Show the actual error so Firestore permission issues are visible
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.cloud_off, size: 64, color: Colors.red),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Failed to load products',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '${snapshot.error}',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.grey, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
                 // 1. Convert docs to a List so we can sort them
                 List<DocumentSnapshot> items = snapshot.data!.docs.where((doc) {

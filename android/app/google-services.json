@@ -12,7 +12,20 @@
           "package_name": "com.example.AngaFit"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "951060218171-oeqqi98ppc3gl5pijoth2og5hto31llb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.AngaFit",
+            "certificate_hash": "62d59d747021f52f539c630f2c48095db777b608"
+          }
+        },
+        {
+          "client_id": "951060218171-pc6vsgg80ehd3qi2g1eftv2do3kcfc08.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAY0bslR947EUqQn0TN6aDjr7kM0H9ddrw"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951060218171-pc6vsgg80ehd3qi2g1eftv2do3kcfc08.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "951060218171-i4tl00k8l9j2hq7u81rfto7v1e37kopj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.AngaFit"
+              }
+            }
+          ]
         }
       }
     }

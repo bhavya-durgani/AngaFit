@@ -92,38 +92,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 2. BRAND & RED TRY ON BUTTON
+                  // 2. BRAND & 360 TRY ON BUTTON
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(widget.product.brand, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ARTryOnScreen(
-                              product: widget.product,
-                              initialSize: selectedSize,
-                            ),
-                          ),
-                        ),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryRed,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
-                          ),
-                          child: const Row(
-                            children: [
-                              Icon(Icons.auto_awesome, color: Colors.white, size: 16),
-                              SizedBox(width: 6),
-                              Text("Try On", style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
                       GestureDetector(
                         onTap: () => Navigator.push(
                           context,
@@ -136,18 +109,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                         ),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: AppColors.primaryRed, width: 1.5),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                            color: AppColors.primaryRed,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(color: AppColors.primaryRed.withValues(alpha: 0.4), blurRadius: 8, offset: const Offset(0, 4))
+                            ],
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.threesixty, color: AppColors.primaryRed, size: 16),
+                              Icon(Icons.threesixty, color: Colors.white, size: 18),
                               SizedBox(width: 6),
-                              Text("360°", style: TextStyle(color: AppColors.primaryRed, fontSize: 12, fontWeight: FontWeight.bold)),
+                              Text("360° TRY ON", style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
@@ -257,15 +231,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CheckoutScreen(
-                                total: widget.product.price * quantity,
-                                count: quantity,
+                          onPressed: () {
+                            // Package current item for direct purchase
+                            final directItem = {
+                              'name': widget.product.name,
+                              'brand': widget.product.brand,
+                              'price': widget.product.price,
+                              'imageUrl': widget.product.imageUrl,
+                              'size': selectedSize,
+                              'quantity': quantity,
+                            };
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => CheckoutScreen(
+                                  total: widget.product.price * quantity,
+                                  count: quantity,
+                                  directItems: [directItem],
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                           child: const Text("BUY NOW"),
                         ),
                       ),

@@ -12,3 +12,15 @@
 -keepclassmembers class * {
     @android.webkit.JavascriptInterface <methods>;
 }
+
+# ── Firebase / Firestore (prevents release build breakage) ────────────────────
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }
+-keep class io.grpc.** { *; }
+-dontwarn com.google.firebase.**
+-dontwarn com.google.android.gms.**
+
+# Keep Kotlin coroutines (used internally by Firebase SDKs)
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}

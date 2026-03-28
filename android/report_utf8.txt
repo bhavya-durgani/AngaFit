@@ -1,0 +1,407 @@
+﻿> Task :gradle:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle:compileKotlin UP-TO-DATE
+> Task :gradle:compileJava NO-SOURCE
+> Task :gradle:compileGroovy NO-SOURCE
+> Task :gradle:pluginDescriptors UP-TO-DATE
+> Task :gradle:processResources UP-TO-DATE
+> Task :gradle:classes UP-TO-DATE
+> Task :gradle:jar UP-TO-DATE
+
+> Configure project :app
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+WARNING: [CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+[CXX5106] NDK was located by using ndk.dir property. This method is deprecated and will be removed in a future release. Please delete ndk.dir from local.properties and set android.ndkVersion to [27.3.13750724] in all native modules in the project. https://developer.android.com/r/studio-ui/ndk-dir
+
+> Configure project :camera_android_camerax
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :cloud_firestore
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :cloud_functions
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :file_picker
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :firebase_auth
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :firebase_core
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :firebase_storage
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :flutter_plugin_android_lifecycle
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :flutter_unity_widget
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :google_sign_in_android
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :image_picker_android
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :local_auth_android
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :path_provider_android
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :permission_handler_android
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :sqflite_android
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :unityLibrary
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :url_launcher_android
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :video_player_android
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :video_thumbnail
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :webview_flutter_android
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+
+> Configure project :unityLibrary:xrmanifest.androidlib
+WARNING: Using flatDir should be avoided because it doesn't support any meta-data formats.
+WARNING: Using flatDir2 should be avoided because it doesn't support any meta-data formats.
+WARNING: minSdkVersion (24) is greater than targetSdkVersion (22) for variant "debug". Please change the values such that minSdkVersion is less than or equal to targetSdkVersion.
+WARNING: minSdkVersion (24) is greater than targetSdkVersion (22) for variant "release". Please change the values such that minSdkVersion is less than or equal to targetSdkVersion.
+
+> Task :app:signingReport
+Variant: debug
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+Variant: release
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+Variant: profile
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :camera_android_camerax:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :cloud_firestore:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :cloud_functions:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :file_picker:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :firebase_auth:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :firebase_core:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :firebase_storage:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :flutter_plugin_android_lifecycle:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :flutter_unity_widget:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :google_sign_in_android:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :image_picker_android:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :local_auth_android:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :path_provider_android:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :permission_handler_android:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :sqflite_android:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :unityLibrary:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :url_launcher_android:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :video_player_android:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :video_thumbnail:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :webview_flutter_android:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+> Task :unityLibrary:xrmanifest.androidlib:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\bhavy\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: E9:2B:9A:4E:C0:5A:21:3E:66:2F:36:D9:42:55:0F:1A
+SHA1: 8D:B2:6D:FB:B1:67:3F:98:06:56:A3:C9:A1:15:06:E3:F9:9D:8A:A4
+SHA-256: B4:15:26:99:DB:DA:9E:5D:44:0B:A0:FA:B1:74:FC:78:85:07:D7:C8:13:AC:47:4B:ED:DA:45:62:15:F5:9C:4C
+Valid until: Monday, November 30, 2054
+----------
+
+[Incubating] Problems report is available at: file:///D:/FlutterProjects/AngaFit/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 5s
+26 actionable tasks: 22 executed, 4 up-to-date

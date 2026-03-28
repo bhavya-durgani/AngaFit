@@ -1,16 +1,57 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../core/constants/app_colors.dart';
+import '../../data/services/database_service.dart';
+import '../admin/admin_login_screen.dart';
 import '../auth/login_screen.dart';
-import '../admin/admin_upload_screen.dart';
 import 'orders_screen.dart';
 import 'settings_screen.dart';
 import 'shipping_addresses_screen.dart';
-import '../checkout/payment_methods_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isUploading = false;
+
+  Future<void> _pickAndUploadImage(String uid) async {
+    final picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
+
+    if (image == null) return;
+
+    setState(() => _isUploading = true);
+
+    try {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('users')
+          .child(uid)
+          .child('profile.jpg');
+      await ref.putFile(File(image.path));
+      final url = await ref.getDownloadURL();
+      await DatabaseService().updateProfilePhoto(url);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Upload failed: $e")),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isUploading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +64,7 @@ class ProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 60),
+
             // Screen Title
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -33,24 +75,63 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // USER INFO SECTION (Real-time from Firestore)
+            // USER INFO SECTION
             StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(uid)
+                  .snapshots(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-                final data = snapshot.data!.data() as Map<String, dynamic>?;
+                final data = snapshot.data?.data() as Map<String, dynamic>?;
+                final imageUrl = data?['profileImageUrl'];
 
                 return ListTile(
-                  leading: const CircleAvatar(
-                    radius: 32,
-                    backgroundImage: NetworkImage("https://images.unsplash.com/photo-1535713875002-d1d0cfdcb5ab"),
+                  leading: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 36,
+                        backgroundColor: Colors.grey.shade200,
+                        backgroundImage: imageUrl != null
+                            ? NetworkImage(imageUrl)
+                            : null,
+                        child: imageUrl == null
+                            ? const Icon(Icons.person,
+                                size: 40, color: Colors.grey)
+                            : null,
+                      ),
+                      if (_isUploading)
+                        const Positioned.fill(
+                          child: Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: uid != null
+                              ? () => _pickAndUploadImage(uid)
+                              : null,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: AppColors.primaryRed,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.camera_alt,
+                                color: Colors.white, size: 16),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   title: Text(
                     data?['name'] ?? "User",
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   subtitle: Text(
-                    data?['email'] ?? "Email not found",
+                    data?['email'] ?? "",
                     style: const TextStyle(color: AppColors.grey),
                   ),
                 );
@@ -74,24 +155,15 @@ class ProfileScreen extends StatelessWidget {
             ),
             _profileTile(
               context,
-              "Payment methods",
-              "Visa **34, Google Pay",
-              const PaymentMethodsScreen(),
-            ),
-            _profileTile(
-              context,
               "Settings",
               "Notifications, password, and privacy",
               const SettingsScreen(),
             ),
-
-            // ADMIN PANEL ENTRY (For the Shop Owner)
-            const Divider(height: 40),
             _profileTile(
               context,
               "Admin Panel",
-              "Upload new products and generate 3D assets",
-              const AdminUploadScreen(),
+              "Manage products and orders (Authorized personnel only)",
+              const AdminLoginScreen(),
               isHighlight: true,
             ),
 
@@ -106,7 +178,7 @@ class ProfileScreen extends StatelessWidget {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()),
-                          (route) => false,
+                      (route) => false,
                     );
                   }
                 },
@@ -128,12 +200,12 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _profileTile(
-      BuildContext context,
-      String title,
-      String subtitle,
-      Widget target,
-      {bool isHighlight = false}
-      ) {
+    BuildContext context,
+    String title,
+    String subtitle,
+    Widget target, {
+    bool isHighlight = false,
+  }) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Color(0xFFEEEEEE))),

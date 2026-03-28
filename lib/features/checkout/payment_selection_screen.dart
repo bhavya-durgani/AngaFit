@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
-import '../../data/services/stripe_service.dart';
-
+import '../../core/utils/cart_provider.dart';
+import '../../data/services/database_service.dart';
+import '../cart/success_screen.dart';
+import 'qr_payment_screen.dart';
 class PaymentSelectionScreen extends StatefulWidget {
   final double totalAmount;
-  const PaymentSelectionScreen({super.key, required this.totalAmount});
+  final List<Map<String, dynamic>>? directItems;
+  final String? address;
+  const PaymentSelectionScreen({super.key, required this.totalAmount, this.directItems, this.address});
 
   @override
   State<PaymentSelectionScreen> createState() => _PaymentSelectionScreenState();
 }
 
 class _PaymentSelectionScreenState extends State<PaymentSelectionScreen> {
-  String selectedMethod = "Stripe";
+  String selectedMethod = "QR";
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +31,10 @@ class _PaymentSelectionScreenState extends State<PaymentSelectionScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Recommended", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const Text("Payment Options", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12),
-                  _methodTile("Credit / Debit Card", "Powered by Stripe", Icons.credit_card, "Stripe"),
-                  const SizedBox(height: 24),
-                  const Text("Other Methods", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  _methodTile("Scan QR for Payment", "Pay using UPI apps", Icons.qr_code_2, "QR"),
                   const SizedBox(height: 12),
-                  _methodTile("Google Pay", "Fast and Secure", Icons.account_balance_wallet, "GPay"),
                   _methodTile("Cash on Delivery", "Pay at doorstep", Icons.handshake, "COD"),
                 ],
               ),
@@ -87,11 +89,53 @@ class _PaymentSelectionScreenState extends State<PaymentSelectionScreen> {
           SizedBox(
             width: 160,
             child: ElevatedButton(
-              onPressed: () {
-                if (selectedMethod == "Stripe") {
-                  StripeService().makePayment(context, widget.totalAmount);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Method selected! Proceeding...")));
+              onPressed: () async {
+                if (selectedMethod == "QR") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => QrPaymentScreen(
+                        totalAmount: widget.totalAmount,
+                        directItems: widget.directItems,
+                        address: widget.address,
+                      ),
+                    ),
+                  );
+                } else if (selectedMethod == "COD") {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (_) => const Center(child: CircularProgressIndicator()),
+                  );
+                  
+                  try {
+                    // Create order
+                    await DatabaseService().createOrder(
+                      widget.totalAmount, 
+                      directItems: widget.directItems,
+                      address: widget.address,
+                      paymentMethod: "COD",
+                    );
+                    
+                    await Future.delayed(const Duration(seconds: 1));
+                    
+                    if (context.mounted) {
+                      Provider.of<CartProvider>(context, listen: false).clearCart(); // Sync local state IF it was from cart
+                      Navigator.pop(context); // close dialog
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SuccessScreen()),
+                        (route) => false,
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
+                      );
+                    }
+                  }
                 }
               },
               child: const Text("PAY NOW"),

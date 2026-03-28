@@ -24,22 +24,32 @@ class AuthService {
 
   Future<User?> login(String email, String password) async => (await _auth.signInWithEmailAndPassword(email: email, password: password)).user;
 
+  /// Signs in with Google using native Google Play Services.
+  /// Fixed: Replaced browser-based signInWithProvider (which was throwing 
+  /// 'missing initial state' due to Chrome storage partitioning/cookies)
+  /// with the native google_sign_in plugin.
   Future<User?> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-    if (googleAuth == null) return null;
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+    if (gUser == null) return null; // User canceled the sign-in
 
-    final credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-    UserCredential result = await _auth.signInWithCredential(credential);
+    final GoogleSignInAuthentication gAuth = await gUser.authentication;
+    final OAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken,
+      idToken: gAuth.idToken,
+    );
 
-    // Check if profile exists, if not create it
-    final doc = await _db.collection('users').doc(result.user!.uid).get();
-    if (!doc.exists) {
-      await _db.collection('users').doc(result.user!.uid).set({
-        'name': result.user!.displayName ?? "User",
-        'email': result.user!.email,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+    final UserCredential result = await _auth.signInWithCredential(credential);
+
+    // Create Firestore profile if this is a new user
+    if (result.user != null) {
+      final doc = await _db.collection('users').doc(result.user!.uid).get();
+      if (!doc.exists) {
+        await _db.collection('users').doc(result.user!.uid).set({
+          'name': result.user!.displayName ?? 'User',
+          'email': result.user!.email,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
     }
     return result.user;
   }
@@ -49,3 +59,4 @@ class AuthService {
     await _auth.signOut();
   }
 }
+

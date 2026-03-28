@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
-  final String name, brand, imageUrl, description, composition, care, unityModelUrl;
+  final String id, name, brand, imageUrl, description, composition, care, unityModelUrl;
   final double price;
   final List<String> availableSizes;
   final List<String> availableColors;
 
   Product({
+    this.id = '',
     required this.name,
     required this.brand,
     required this.price,
@@ -22,6 +23,7 @@ class Product {
   factory Product.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
     return Product(
+      id: doc.id,
       name: data['name'] ?? '',
       brand: data['brand'] ?? '',
       price: (data['price'] ?? 0).toDouble(),
@@ -41,4 +43,4 @@ class Order {
   Order({required this.id, required this.date, required this.status, required this.amount, required this.imageUrl});
 }
 
-final List<String> appCategories = ["All", "Women", "Men", "Kids", "Work"];
+final List<String> appCategories = ["All", "Women", "Men", "Kids"];
