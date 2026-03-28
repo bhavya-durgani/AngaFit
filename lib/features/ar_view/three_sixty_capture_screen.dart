@@ -18,8 +18,27 @@ import 'three_sixty_result_screen.dart';
 Uint8List _fixRotationIsolate(Uint8List rawBytes) {
   final decoded = img.decodeImage(rawBytes);
   if (decoded == null) return rawBytes;
-  final oriented = img.bakeOrientation(decoded);
-  return Uint8List.fromList(img.encodeJpg(oriented, quality: 90));
+  
+  var oriented = img.bakeOrientation(decoded);
+  
+  // Crop to 3:4 aspect ratio to prevent the AI from squashing 
+  // the video frame, which results in a shorter height/distorted body.
+  int targetWidth = oriented.width;
+  int targetHeight = (oriented.width * 4) ~/ 3;
+  
+  if (targetHeight < oriented.height) {
+    int yOffset = (oriented.height - targetHeight) ~/ 2;
+    oriented = img.copyCrop(oriented, x: 0, y: yOffset, width: targetWidth, height: targetHeight);
+  } else if (targetHeight > oriented.height) {
+    targetWidth = (oriented.height * 3) ~/ 4;
+    int xOffset = (oriented.width - targetWidth) ~/ 2;
+    oriented = img.copyCrop(oriented, x: xOffset, y: 0, width: targetWidth, height: targetHeight);
+  }
+  
+  // Ensure we output natively at 768x1024 for OOTDiffusion
+  final resized = img.copyResize(oriented, width: 768, height: 1024);
+  
+  return Uint8List.fromList(img.encodeJpg(resized, quality: 90));
 }
 
 // ─── Capture phase ────────────────────────────────────────────────────────────

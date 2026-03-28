@@ -438,8 +438,29 @@ class _ARTryOnScreenState extends State<ARTryOnScreen>
   Future<Uint8List> _fixRotation(Uint8List rawBytes) async {
     final decoded = img.decodeImage(rawBytes);
     if (decoded == null) return rawBytes;
-    final oriented = img.bakeOrientation(decoded);
-    return Uint8List.fromList(img.encodeJpg(oriented, quality: 92));
+    
+    var oriented = img.bakeOrientation(decoded);
+    
+    // Crop to exactly 3:4 aspect ratio to prevent OOTDiffusion from squashing
+    // the 16:9 phone photo into 3:4, which makes the person look wider/shorter.
+    int targetWidth = oriented.width;
+    int targetHeight = (oriented.width * 4) ~/ 3;
+    
+    if (targetHeight < oriented.height) {
+      // Image is too tall (e.g., standard portrait phone photo). Crop top/bottom.
+      int yOffset = (oriented.height - targetHeight) ~/ 2;
+      oriented = img.copyCrop(oriented, x: 0, y: yOffset, width: targetWidth, height: targetHeight);
+    } else if (targetHeight > oriented.height) {
+      // Image is too wide (rare for portrait, but just in case). Crop sides.
+      targetWidth = (oriented.height * 3) ~/ 4;
+      int xOffset = (oriented.width - targetWidth) ~/ 2;
+      oriented = img.copyCrop(oriented, x: xOffset, y: 0, width: targetWidth, height: targetHeight);
+    }
+    
+    // Downscale strictly to the model's native resolution (768x1024) to save bandwidth
+    final resized = img.copyResize(oriented, width: 768, height: 1024);
+    
+    return Uint8List.fromList(img.encodeJpg(resized, quality: 92));
   }
 
   Future<String> _uploadToGradio(List<int> bytes, String filename) async {
