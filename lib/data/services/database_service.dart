@@ -180,9 +180,9 @@ class DatabaseService {
 
   Future<void> updateProfilePhoto(String url) async {
     if (uid == null) return;
-    await _db.collection('users').doc(uid).update({
+    await _db.collection('users').doc(uid).set({
       'profileImageUrl': url,
-    });
+    }, SetOptions(merge: true));
   }
 
   // ─── Admin ─────────────────────────────────────────────────────────────────

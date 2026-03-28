@@ -19,6 +19,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
   RangeValues currentRange = const RangeValues(0, 10000);
   String? selectedSize;
   String? selectedColor;
+  late TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController(text: widget.searchQuery ?? '');
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +40,31 @@ class _ProductListScreenState extends State<ProductListScreen> {
       appBar: AppBar(title: const Text("Shop"), centerTitle: true),
       body: Column(
         children: [
+          // SEARCH BAR
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (val) => setState(() {}),
+              decoration: InputDecoration(
+                hintText: "Search products or brands...",
+                prefixIcon: const Icon(Icons.search, color: AppColors.grey),
+                suffixIcon: _searchController.text.isNotEmpty 
+                  ? IconButton(
+                      icon: const Icon(Icons.clear, color: AppColors.grey), 
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() {});
+                      }
+                    ) 
+                  : null,
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+              ),
+            ),
+          ),
           _buildCategoryBar(),
           // ACTION BAR
           Container(
@@ -114,9 +152,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
                   bool matchCat = activeCategory == 'All' || cat == activeCategory;
                   bool matchPrice = price >= currentRange.start && price <= currentRange.end;
-                  bool matchSearch = widget.searchQuery == null ||
-                      name.contains(widget.searchQuery!.toLowerCase()) ||
-                      brand.contains(widget.searchQuery!.toLowerCase());
+                  
+                  final query = _searchController.text.trim().toLowerCase();
+                  bool matchSearch = query.isEmpty ||
+                      name.contains(query) ||
+                      brand.contains(query);
                       
                   bool matchSize = selectedSize == null || sizes.contains(selectedSize);
                   bool matchColor = selectedColor == null || colors.any((c) => c.toString().toLowerCase() == selectedColor!.toLowerCase());

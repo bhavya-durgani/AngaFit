@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
 import '../../core/constants/app_colors.dart';
 import '../../data/services/database_service.dart';
 import '../admin/admin_login_screen.dart';
@@ -34,18 +36,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => _isUploading = true);
 
     try {
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('users')
-          .child(uid)
-          .child('profile.jpg');
-      await ref.putFile(File(image.path));
-      final url = await ref.getDownloadURL();
-      await DatabaseService().updateProfilePhoto(url);
+      // 1. Read bytes from picker
+      final bytes = await image.readAsBytes();
+      
+      // 2. Decode and Resize to keep Base64 string small (<1MB Firestore limit)
+      final decoded = img.decodeImage(bytes);
+      if (decoded != null) {
+        final resized = img.copyResize(decoded, width: 150, height: 150);
+        
+        // 3. Convert to Base64 String
+        final pngBytes = img.encodePng(resized);
+        final base64String = base64Encode(pngBytes);
+        
+        // 4. Save directly to Firestore (Bypassing Firebase Storage)
+        await DatabaseService().updateProfilePhoto("data:image/png;base64,$base64String");
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Upload failed: $e")),
+          SnackBar(content: Text("Profile update failed: $e")),
         );
       }
     } finally {
@@ -85,54 +94,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 final data = snapshot.data?.data() as Map<String, dynamic>?;
                 final imageUrl = data?['profileImageUrl'];
 
-                return ListTile(
-                  leading: Stack(
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
                     children: [
-                      CircleAvatar(
-                        radius: 36,
-                        backgroundColor: Colors.grey.shade200,
-                        backgroundImage: imageUrl != null
-                            ? NetworkImage(imageUrl)
-                            : null,
-                        child: imageUrl == null
-                            ? const Icon(Icons.person,
-                                size: 40, color: Colors.grey)
-                            : null,
-                      ),
-                      if (_isUploading)
-                        const Positioned.fill(
-                          child: Center(
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                      Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.grey.shade200,
+                            backgroundImage: imageUrl != null && imageUrl.toString().isNotEmpty
+                                ? (imageUrl.toString().startsWith('http')
+                                    ? NetworkImage(imageUrl)
+                                    : MemoryImage(base64Decode(imageUrl.toString().split(',').last))) as ImageProvider
+                                : null,
+                            child: imageUrl == null || imageUrl.toString().isEmpty
+                                ? const Icon(Icons.person, size: 40, color: Colors.grey)
+                                : null,
                           ),
-                        ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: uid != null
-                              ? () => _pickAndUploadImage(uid)
-                              : null,
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: const BoxDecoration(
-                              color: AppColors.primaryRed,
-                              shape: BoxShape.circle,
+                          if (_isUploading)
+                            const Positioned.fill(
+                              child: CircularProgressIndicator(strokeWidth: 3, color: AppColors.primaryRed),
                             ),
-                            child: const Icon(Icons.camera_alt,
-                                color: Colors.white, size: 16),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: uid != null && !_isUploading
+                                  ? () => _pickAndUploadImage(uid)
+                                  : null,
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryRed,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                ),
+                                child: const Icon(Icons.camera_alt, color: Colors.white, size: 14),
+                              ),
+                            ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data?['name'] ?? "User",
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              data?['email'] ?? FirebaseAuth.instance.currentUser?.email ?? "",
+                              style: const TextStyle(color: AppColors.grey, fontSize: 13),
+                            ),
+                          ],
                         ),
                       ),
                     ],
-                  ),
-                  title: Text(
-                    data?['name'] ?? "User",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  subtitle: Text(
-                    data?['email'] ?? "",
-                    style: const TextStyle(color: AppColors.grey),
                   ),
                 );
               },

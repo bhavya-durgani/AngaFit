@@ -109,19 +109,35 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
             const SizedBox(height: 60),
 
-            // APPLY BUTTON
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context, {
-                    'range': _currentRange,
-                    'size': _selectedSize,
-                    'color': _selectedColor,
-                  });
-                },
-                child: const Text("Apply"),
-              ),
+            // APPLY / CLEAR BUTTONS
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        _currentRange = const RangeValues(0, 10000);
+                        _selectedSize = null;
+                        _selectedColor = null;
+                      });
+                    },
+                    child: const Text("Clear All"),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, {
+                        'range': _currentRange,
+                        'size': _selectedSize,
+                        'color': _selectedColor,
+                      });
+                    },
+                    child: const Text("Apply"),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

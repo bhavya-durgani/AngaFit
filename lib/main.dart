@@ -5,10 +5,13 @@ import 'core/theme/app_theme.dart';
 import 'core/utils/cart_provider.dart';
 import 'features/splash/splash_screen.dart';
 import 'firebase_options.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   // 1. Ensure Flutter framework is initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: ".env");
 
   // 2. Initialize Firebase
   try {

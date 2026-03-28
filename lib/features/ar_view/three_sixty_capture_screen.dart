@@ -13,6 +13,7 @@ import 'package:video_thumbnail/video_thumbnail.dart' as video_thumb;
 
 import '../../data/dummy_data.dart';
 import 'three_sixty_result_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // ─── Isolate helper (keeps UI thread free) ────────────────────────────────────
 Uint8List _fixRotationIsolate(Uint8List rawBytes) {
@@ -108,14 +109,7 @@ class _ThreeSixtyCaptureScreenState extends State<ThreeSixtyCaptureScreen>
   bool _garmentLoading = false;
 
   final String _hfSpaceUrl = 'https://levihsu-ootdiffusion.hf.space';
-  final List<String> _hfTokens = [
-    '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',
-    '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',
-    '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',
-    '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',
-    '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',
-    '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'
-  ];
+  late final List<String> _hfTokens = dotenv.env['HF_TOKENS']!.split(',');
 
   /// FIX: Each concurrent frame gets its own token index to avoid
   /// shared-state corruption when two frames rotate tokens simultaneously.

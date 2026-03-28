@@ -20,17 +20,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _uid = FirebaseAuth.instance.currentUser?.uid;
   bool _isLoading = false;
 
-  // Preferences
-  bool _pushNotifications = true;
-  bool _emailNewsletter = false;
-  bool _biometricLogin = false;
-  bool _biometricAvailable = false;
-
   @override
   void initState() {
     super.initState();
     _loadProfile();
-    _checkBiometricAvailability();
   }
 
   @override
@@ -54,86 +47,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final data = doc.data() as Map<String, dynamic>;
       setState(() {
         _nameController.text = data['name'] ?? '';
-        _pushNotifications = data['pushNotifications'] ?? true;
-        _emailNewsletter = data['emailNewsletter'] ?? false;
-        _biometricLogin = data['biometricLogin'] ?? false;
       });
     }
   }
 
-  Future<void> _checkBiometricAvailability() async {
-    try {
-      final canCheck = await _auth.canCheckBiometrics;
-      final isSupported = await _auth.isDeviceSupported();
-      if (mounted) {
-        setState(() => _biometricAvailable = canCheck && isSupported);
-      }
-    } catch (_) {
-      if (mounted) setState(() => _biometricAvailable = false);
-    }
-  }
 
-  // ── Push notification toggle ──────────────────────────────────────────────
-
-  Future<void> _handleNotificationToggle(bool value) async {
-    if (value) {
-      // Request permission when enabling
-      final status = await Permission.notification.request();
-      if (!mounted) return;
-      if (status.isDenied || status.isPermanentlyDenied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: AppColors.primaryRed,
-            content: const Text('Notification permission denied. Enable it in App Settings.'),
-            action: SnackBarAction(
-              label: 'Open Settings',
-              textColor: Colors.white,
-              onPressed: openAppSettings,
-            ),
-          ),
-        );
-        return; // Don't toggle on if permission refused
-      }
-    }
-    setState(() => _pushNotifications = value);
-  }
-
-  // ── Biometric toggle ──────────────────────────────────────────────────────
-
-  Future<void> _handleBiometricToggle(bool value) async {
-    if (value) {
-      // Verify biometrics before enabling
-      try {
-        final authenticated = await _auth.authenticate(
-          localizedReason: 'Confirm your identity to enable biometric login',
-          options: const AuthenticationOptions(
-            biometricOnly: false,
-            stickyAuth: true,
-          ),
-        );
-        if (!mounted) return;
-        if (!authenticated) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              backgroundColor: AppColors.primaryRed,
-              content: Text('Biometric authentication failed. Try again.'),
-            ),
-          );
-          return;
-        }
-      } catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: AppColors.primaryRed,
-            content: Text('Biometrics not available: $e'),
-          ),
-        );
-        return;
-      }
-    }
-    setState(() => _biometricLogin = value);
-  }
 
   // ── Save ──────────────────────────────────────────────────────────────────
 
@@ -169,9 +87,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // 3. Persist all prefs to Firestore
       await FirebaseFirestore.instance.collection('users').doc(_uid).update({
         'name': newName,
-        'pushNotifications': _pushNotifications,
-        'emailNewsletter': _emailNewsletter,
-        'biometricLogin': _biometricLogin,
       });
 
       if (!mounted) return;
@@ -266,60 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
 
-            const SizedBox(height: 30),
 
-            // ── App Preferences ───────────────────────────────────────────
-            const Text('App Preferences',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  // Push Notifications — actually requests OS permission
-                  SwitchListTile(
-                    activeColor: AppColors.primaryRed,
-                    secondary: const Icon(Icons.notifications_outlined),
-                    title: const Text('Push Notifications'),
-                    subtitle: const Text('Order updates & promotions',
-                        style: TextStyle(fontSize: 11, color: AppColors.grey)),
-                    value: _pushNotifications,
-                    onChanged: _handleNotificationToggle,
-                  ),
-                  const Divider(height: 1, indent: 16, endIndent: 16),
-
-                  // Email Newsletter — persisted to Firestore
-                  SwitchListTile(
-                    activeColor: AppColors.primaryRed,
-                    secondary: const Icon(Icons.email_outlined),
-                    title: const Text('Email Newsletters'),
-                    subtitle: const Text('Style tips & exclusive deals',
-                        style: TextStyle(fontSize: 11, color: AppColors.grey)),
-                    value: _emailNewsletter,
-                    onChanged: (val) => setState(() => _emailNewsletter = val),
-                  ),
-                  const Divider(height: 1, indent: 16, endIndent: 16),
-
-                  // Biometric Login — verifies via local_auth before enabling
-                  SwitchListTile(
-                    activeColor: AppColors.primaryRed,
-                    secondary: const Icon(Icons.fingerprint),
-                    title: const Text('Fingerprint / Face ID Login'),
-                    subtitle: Text(
-                      _biometricAvailable
-                          ? 'Use biometrics to log in faster'
-                          : 'Not available on this device',
-                      style: const TextStyle(fontSize: 11, color: AppColors.grey),
-                    ),
-                    value: _biometricLogin,
-                    onChanged: _biometricAvailable ? _handleBiometricToggle : null,
-                  ),
-                ],
-              ),
-            ),
 
             const SizedBox(height: 40),
 

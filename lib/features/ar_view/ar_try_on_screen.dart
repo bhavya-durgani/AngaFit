@@ -11,6 +11,7 @@ import 'dart:math' as dart_math;
 import '../../core/constants/app_colors.dart';
 import '../../data/dummy_data.dart';
 import 'ar_result_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Stages of the VTON flow
 enum _Stage {
@@ -67,7 +68,13 @@ class _ARTryOnScreenState extends State<ARTryOnScreen>
   // 2. Create a "Read" token: https://huggingface.co/settings/tokens
   // 3. Paste it below:
   // static const String _hfToken = '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'; // e.g. 'hf_xxxxxxxxxxxxxxxxxxxx'
-  static const String _hfToken = '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'; // e.g. 'hf_xxxxxxxxxxxxxxxxxxxx'
+  String get _hfToken {
+    final token = dotenv.env['HF_TOKEN'];
+    if (token != null && token.isNotEmpty) return token;
+    final tokens = dotenv.env['HF_TOKENS'];
+    if (tokens != null && tokens.isNotEmpty) return tokens.split(',').first;
+    return '';
+  }
 
   /// Returns headers with Authorization if _hfToken is set, else basic headers.
   Map<String, String> get _joinHeaders => {

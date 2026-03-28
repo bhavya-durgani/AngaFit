@@ -45,7 +45,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       appBar: AppBar(
         title: Text(widget.product.brand),
         centerTitle: true,
-        actions: [IconButton(icon: const Icon(Icons.share_outlined), onPressed: () {})],
       ),
       body: SingleChildScrollView(
         child: Column(
