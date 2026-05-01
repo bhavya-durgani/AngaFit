@@ -1,30 +1,73 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../../data/dummy_data.dart';
-import '../product_details/product_details_screen.dart';
+import 'package:flutter/material.dart'; // Flutter UI toolkit
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore database
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase authentication
+import '../../data/dummy_data.dart'; // Product model (dummy data structure)
+import '../product_details/product_details_screen.dart'; // Product details screen
 
+// Stateless widget (no changing state inside this screen)
 class FavoritesScreen extends StatelessWidget {
-  const FavoritesScreen({super.key});
+  const FavoritesScreen({super.key}); // Constructor
 
   @override
   Widget build(BuildContext context) {
+
+    // Get current logged-in user's ID
     final uid = FirebaseAuth.instance.currentUser?.uid;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Favorites")),
+
+      // Top app bar
+      appBar: AppBar(
+        title: const Text("Favorites") // Screen title
+      ),
+
+      // BODY
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('users').doc(uid).collection('favorites').snapshots(),
+
+        // Listen to user's favorites collection in Firestore
+        stream: FirebaseFirestore.instance
+            .collection('users') // users collection
+            .doc(uid) // current user
+            .collection('favorites') // favorites subcollection
+            .snapshots(), // real-time updates
+
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-          final docs = snapshot.data!.docs;
+
+          // Show loading while data is coming
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final docs = snapshot.data!.docs; // List of favorite items
+
           return ListView.builder(
-            itemCount: docs.length,
+
+            itemCount: docs.length, // Total favorite items
+
             itemBuilder: (context, index) {
+
+              // Convert Firestore data into Product object
               final product = Product.fromFirestore(docs[index]);
+
               return ListTile(
-                leading: Image.network(product.imageUrl, width: 50),
+
+                // Product image
+                leading: Image.network(
+                  product.imageUrl,
+                  width: 50
+                ),
+
+                // Product name
                 title: Text(product.name),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: product))),
+
+                // When user taps → go to product details screen
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        ProductDetailsScreen(product: product)
+                  ),
+                ),
               );
             },
           );
