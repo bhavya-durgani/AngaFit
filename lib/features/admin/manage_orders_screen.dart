@@ -1,18 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
-import '../../core/constants/app_colors.dart';
-import '../../data/services/database_service.dart';
+import 'package:flutter/material.dart'; // Flutter UI package
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firebase Firestore database package
+import 'package:intl/intl.dart'; // For formatting date and time
+import '../../core/constants/app_colors.dart'; // Custom app colors
+import '../../data/services/database_service.dart'; // Database service for Firestore operations
 
-class ManageOrdersScreen extends StatefulWidget {
-  const ManageOrdersScreen({super.key});
+class ManageOrdersScreen extends StatefulWidget { // Stateful widget to manage orders screen
+  const ManageOrdersScreen({super.key}); // Constructor
 
   @override
-  State<ManageOrdersScreen> createState() => _ManageOrdersScreenState();
+  State<ManageOrdersScreen> createState() => _ManageOrdersScreenState(); // Create state
 }
 
-class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
-  final List<String> _statuses = [
+  final List<String> _statuses = [ // List of all possible order statuses
     'Pending',
     'Processing',
     'Packed',
@@ -21,74 +20,79 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
     'Cancelled'
   ];
 
-  Color _getStatusColor(String status) {
+  Color _getStatusColor(String status) { // Function to return color based on status
     switch (status) {
-      case 'Pending': return Colors.orange;
-      case 'Processing': return Colors.blue;
-      case 'Packed': return Colors.purple;
-      case 'Shipped': return Colors.indigo;
-      case 'Delivered': return Colors.green;
-      case 'Cancelled': return AppColors.error;
-      default: return AppColors.grey;
+      case 'Pending': return Colors.orange; // Pending → orange
+      case 'Processing': return Colors.blue; // Processing → blue
+      case 'Packed': return Colors.purple; // Packed → purple
+      case 'Shipped': return Colors.indigo; // Shipped → indigo
+      case 'Delivered': return Colors.green; // Delivered → green
+      case 'Cancelled': return AppColors.error; // Cancelled → error color
+      default: return AppColors.grey; // Default → grey
     }
   }
 
-  void _updateStatus(DocumentReference orderRef, String currentStatus) {
-    String selectedStatus = currentStatus;
-    showModalBottomSheet(
+  void _updateStatus(DocumentReference orderRef, String currentStatus) {  // Function to update order status
+    String selectedStatus = currentStatus;  // Initially selected status is current status
+    
+    showModalBottomSheet(  // Show bottom sheet
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),  // Rounded top corners
       ),
-      builder: (ctx) => StatefulBuilder(
+      builder: (ctx) => StatefulBuilder(  // Stateful builder to manage local state inside bottom sheet
         builder: (ctx, setStateSb) => Container(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),  // Padding inside bottom sheet
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.min,  // Take minimum height
             children: [
+              
               const Text(
-                'Update Order Status',
+                'Update Order Status',  // Title text
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: _statuses.contains(currentStatus) ? currentStatus : _statuses.first,
+              
+              const SizedBox(height: 16),  // Spacing
+              
+              DropdownButtonFormField<String>(  // Dropdown for selecting new status
+                value: _statuses.contains(currentStatus) ? currentStatus : _statuses.first,  // Set default value
                 items: _statuses
-                    .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                    .map((s) => DropdownMenuItem(value: s, child: Text(s)))  // Convert list into dropdown items
                     .toList(),
                 onChanged: (v) {
-                  if (v != null) setStateSb(() => selectedStatus = v);
+                  if (v != null) setStateSb(() => selectedStatus = v);  // Update selected status
                 },
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),  // Border styling
                   filled: true,
-                  fillColor: Colors.grey.shade100,
+                  fillColor: Colors.grey.shade100,  // Background color
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 24),  // Spacing
               SizedBox(
-                width: double.infinity,
+                width: double.infinity,  // Full width button
                 child: ElevatedButton(
-                  onPressed: () async {
-                    Navigator.pop(ctx);
-                    if (selectedStatus != currentStatus) {
+                  onPressed: () async {  // On button press
+                    Navigator.pop(ctx);  // Close bottom sheet
+                    if (selectedStatus != currentStatus) {   // Only update if changed
                       try {
-                        await DatabaseService().updateOrderStatus(orderRef, selectedStatus);
+                        await DatabaseService().updateOrderStatus(orderRef, selectedStatus);  // Update in Firestore
+                        
                         if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Status updated successfully!')),
+                            const SnackBar(content: Text('Status updated successfully!')),  // Success message
                           );
                         }
                       } catch(e) {
                          if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.error),
+                            SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.error),  // Error message
                           );
                         }
                       }
                     }
                   },
-                  child: const Text('SAVE CHANGES'),
+                  child: const Text('SAVE CHANGES'),   // Button text
                 ),
               )
             ],
@@ -99,29 +103,29 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {   // Build UI
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background,  // Screen background color
       appBar: AppBar(
-        title: const Text('Manage Orders', style: TextStyle(color: AppColors.black)),
+        title: const Text('Manage Orders', style: TextStyle(color: AppColors.black)),  // Title
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+          icon: const Icon(Icons.arrow_back, color: AppColors.black),  // Back button icon
+          onPressed: () => Navigator.pop(context),   // Navigate back
+        ),  
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: DatabaseService().getAllOrdersAdminStream(),
+      body: StreamBuilder<QuerySnapshot>(  // Listen to real-time Firestore data
+        stream: DatabaseService().getAllOrdersAdminStream(),  // Stream of all orders
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting) {   // While loading
             return const Center(child: CircularProgressIndicator(color: AppColors.primaryRed));
           }
-          if (snapshot.hasError) {
+          if (snapshot.hasError) {   // If error occurs
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SelectableText(
-                  "Error fetching orders:\n\n${snapshot.error}", 
+                  "Error fetching orders:\n\n${snapshot.error}",    // Show error message
                   style: const TextStyle(color: AppColors.error),
                   textAlign: TextAlign.center,
                 ),
@@ -129,40 +133,42 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
             );
           }
 
-          final docs = snapshot.data?.docs ?? [];
+          final docs = snapshot.data?.docs ?? [];   // Show error message
 
-          if (docs.isEmpty) {
+          if (docs.isEmpty) {  // If no orders
             return const Center(
               child: Text("No orders found across the platform.", style: TextStyle(color: AppColors.grey)),
             );
           }
 
-          return ListView.builder(
+          return ListView.builder(  // List of orders
             padding: const EdgeInsets.all(16),
             itemCount: docs.length,
             itemBuilder: (context, index) {
-              final doc = docs[index];
-              final data = doc.data() as Map<String, dynamic>;
+              
+              final doc = docs[index];   // Get single document
+              final data = doc.data() as Map<String, dynamic>;  // Convert to map
 
-              final status = data['status'] ?? 'Pending';
-              final orderId = data['orderId'] ?? doc.id;
-              final total = data['total'] ?? 0.0;
-              final itemsCount = data['itemsCount'] ?? 0;
-              final paymentMethod = data['paymentMethod'] ?? 'Unknown';
+              final status = data['status'] ?? 'Pending'; // Get status
+              final orderId = data['orderId'] ?? doc.id; // Get order ID
+              final total = data['total'] ?? 0.0; // Get total amount
+              final itemsCount = data['itemsCount'] ?? 0; // Number of items
+              final paymentMethod = data['paymentMethod'] ?? 'Unknown'; // Payment method
 
-              String dateStr = '';
-              final ts = data['createdAt'];
+              String dateStr = ''; // Date string
+              final ts = data['createdAt']; // Timestamp
+              
               if (ts is Timestamp) {
-                dateStr = DateFormat('MMM dd, yyyy - hh:mm a').format(ts.toDate());
+                dateStr = DateFormat('MMM dd, yyyy - hh:mm a').format(ts.toDate());  // Format date
               }
 
-              return Card(
+              return Card(   // Order card UI
                 elevation: 2,
                 margin: const EdgeInsets.only(bottom: 16),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: () => _updateStatus(doc.reference, status),
+                  onTap: () => _updateStatus(doc.reference, status),   // Open update sheet
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -173,7 +179,7 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
                           children: [
                             Expanded(
                               child: Text(
-                                'Order #$orderId',
+                                'Order #$orderId',   // Show order ID
                                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -181,7 +187,7 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: _getStatusColor(status).withAlpha(30),
+                                color: _getStatusColor(status).withAlpha(30),   // Light background color
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
@@ -197,27 +203,29 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          dateStr,
+                          dateStr,   // Show date
                           style: const TextStyle(color: AppColors.grey, fontSize: 12),
                         ),
                         const SizedBox(height: 12),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('$itemsCount items'),
+                            Text('$itemsCount items'),   // Items count
                             Text(
-                              '₹${total.toStringAsFixed(2)}',
+                              '₹${total.toStringAsFixed(2)}',   // Total price
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Text('Payment: $paymentMethod', style: const TextStyle(fontSize: 12, color: AppColors.grey)),
+                        Text('Payment: $paymentMethod',    // Payment method
+                             style: const TextStyle(fontSize: 12, color: AppColors.grey)),
                         
-                        const Divider(height: 24),
+                        const Divider(height: 24),  // Divider line
+                        
                         const Center(
                           child: Text(
-                            'TAP TO CHANGE STATUS',
+                            'TAP TO CHANGE STATUS',  // Instruction
                             style: TextStyle(
                               color: AppColors.primaryRed,
                               fontWeight: FontWeight.bold,
