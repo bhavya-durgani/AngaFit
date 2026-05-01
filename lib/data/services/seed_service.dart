@@ -1,50 +1,119 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';  
+// Imports Firestore database (used to store product data)
 
-class SeedService {
-  static Future<void> seedProducts() async {
-    try {
-      final products = [
+class SeedService {  
+  // Service class used to insert initial/sample data into database
+
+  static Future<void> seedProducts() async {  
+    // Function to add predefined products into Firestore
+
+    try {  
+      // Try block to handle errors safely
+
+      final products = [  
+        // List of product data (dummy/sample products)
+
         {
-          'name': 'Casual Denim Jacket',
-          'brand': 'Levi\'s',
-          'price': 3499.0,
-          'category': 'Men',
-          'imageUrl': 'https://images.unsplash.com/photo-1576872381149-7847515ce5d8',
-          'unityModelUrl': 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/CesiumMan/glTF-Binary/CesiumMan.glb',
-          'unityModelName': 'denim_jacket',
-          'description': 'Classic denim jacket with a comfortable fit.',
-          'composition': 'Denim',
-          'care': 'Hand wash recommended',
-          'availableSizes': ['M', 'L', 'XL', 'XXL'],
-          'availableColors': ['Blue', 'Black'],
-          'createdAt': FieldValue.serverTimestamp(),
+          'name': 'Casual Denim Jacket',  
+          // Product name
+
+          'brand': 'Levi\'s',  
+          // Brand name
+
+          'price': 3499.0,  
+          // Price of product
+
+          'category': 'Men',  
+          // Category (used for filtering)
+
+          'imageUrl': 'https://images.unsplash.com/photo-1576872381149-7847515ce5d8',  
+          // Product image URL
+
+          'unityModelUrl': 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/CesiumMan/glTF-Binary/CesiumMan.glb',  
+          // 3D model URL (used in Unity AR)
+
+          'unityModelName': 'denim_jacket',  
+          // Name of Unity model
+
+          'description': 'Classic denim jacket with a comfortable fit.',  
+          // Product description
+
+          'composition': 'Denim',  
+          // Material details
+
+          'care': 'Hand wash recommended',  
+          // Care instructions
+
+          'availableSizes': ['M', 'L', 'XL', 'XXL'],  
+          // Available sizes
+
+          'availableColors': ['Blue', 'Black'],  
+          // Available colors
+
+          'createdAt': FieldValue.serverTimestamp(),  
+          // Timestamp when product is added
         },
-        {
-          'name': 'Classic White T-Shirt',
-          'brand': 'Zara',
-          'price': 799.0,
-          'category': 'Women',
-          'imageUrl': 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
-          'unityModelUrl': 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/CesiumMan/glTF-Binary/CesiumMan.glb',
-          'unityModelName': 'white_tshirt',
-          'description': 'Simple and elegant white t-shirt.',
-          'composition': 'Cotton',
-          'care': 'Tumble dry low',
-          'availableSizes': ['XS', 'S', 'M', 'L'],
-          'availableColors': ['White'],
-          'createdAt': FieldValue.serverTimestamp(),
 
+        {
+          'name': 'Classic White T-Shirt',  
+          // Second product name
+
+          'brand': 'Zara',  
+          // Brand
+
+          'price': 799.0,  
+          // Price
+
+          'category': 'Women',  
+          // Category
+
+          'imageUrl': 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',  
+          // Image URL
+
+          'unityModelUrl': 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/CesiumMan/glTF-Binary/CesiumMan.glb',  
+          // 3D model URL
+
+          'unityModelName': 'white_tshirt',  
+          // Model name
+
+          'description': 'Simple and elegant white t-shirt.',  
+          // Description
+
+          'composition': 'Cotton',  
+          // Material
+
+          'care': 'Tumble dry low',  
+          // Care instructions
+
+          'availableSizes': ['XS', 'S', 'M', 'L'],  
+          // Sizes
+
+          'availableColors': ['White'],  
+          // Colors
+
+          'createdAt': FieldValue.serverTimestamp(),  
+          // Timestamp
         },
       ];
 
-      final collection = FirebaseFirestore.instance.collection('products');
+      final collection = FirebaseFirestore.instance.collection('products');  
+      // Reference to "products" collection in Firestore
       
-      for (var product in products) {
-        await collection.doc(product['name'] as String).set(product);
+      for (var product in products) {  
+        // Loop through each product in list
+
+        await collection.doc(product['name'] as String).set(product);  
+        // Add product to Firestore using product name as document ID
       }
-    } catch (e) {
-      print("Error seeding products: $e");
-      rethrow;
+
+    } catch (e) {  
+      // Catch any error
+
+      print("Error seeding products: $e");  
+      // Print error in console
+
+      rethrow;  
+      // Throw error again (so it can be handled elsewhere)
     }
   }
 }
