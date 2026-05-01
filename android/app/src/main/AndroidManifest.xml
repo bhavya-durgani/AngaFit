@@ -1,56 +1,105 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Root tag of Android app configuration -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Allows app to access internet (API calls, Firebase, etc.) -->
+
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Allows use of camera (needed for AR features) -->
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Allows recording audio (used in video/AR or voice features) -->
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- Allows saving files to device storage (images, videos, etc.) -->
+
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <!-- Allows biometric authentication (face unlock, fingerprint) -->
+
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <!-- Allows fingerprint authentication (older devices) -->
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Allows app to send notifications (Android 13+) -->
 
     <application
         android:label="AngaFit"
+        <!-- App name shown on device -->
+
         android:name="${applicationName}"
+        <!-- Flutter automatically sets application class -->
+
         android:icon="@mipmap/ic_launcher"
+        <!-- App icon -->
+
         android:largeHeap="true"
-        android:hardwareAccelerated="true"> <!-- ADDED LARGE HEAP -->
+        <!-- Allows app to use more RAM (important for Unity + AR) -->
+
+        android:hardwareAccelerated="true">
+        <!-- Enables GPU acceleration (better performance for UI/AR) -->
 
         <!-- ARCORE METADATA -->
         <meta-data android:name="com.google.ar.core" android:value="required" />
+        <!-- Declares that ARCore is required for this app -->
 
         <activity
             android:name=".MainActivity"
+            <!-- Main entry activity of the app -->
+
             android:exported="true"
+            <!-- Allows app to be launched from outside -->
+
             android:launchMode="singleTop"
+            <!-- Prevents multiple instances of same activity -->
+
             android:taskAffinity=""
+            <!-- Controls task grouping (empty = default behavior) -->
+
             android:theme="@style/LaunchTheme"
+            <!-- Splash/launch screen theme -->
+
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            <!-- Prevents activity restart on configuration changes -->
+
             android:hardwareAccelerated="true"
+            <!-- Enables GPU acceleration for this activity -->
+
             android:windowSoftInputMode="adjustResize">
+            <!-- Adjust UI when keyboard opens -->
 
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme"
                 />
+            <!-- Defines normal app theme after splash -->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+                <!-- Entry point of the app -->
+
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <!-- Makes app appear in launcher/home screen -->
             </intent-filter>
         </activity>
 
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Uses Flutter embedding version 2 -->
 
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
+        <!-- Disables Impeller rendering engine (fallback to older renderer) -->
     </application>
 
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <!-- Allows app to process/share text with other apps -->
+
             <data android:mimeType="text/plain"/>
+            <!-- Specifies plain text type -->
         </intent>
     </queries>
 </manifest>
