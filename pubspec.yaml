@@ -1,48 +1,122 @@
 name: angafit
+# Name of your Flutter project (used internally and for build)
+
 description: "AR based shopping app"
+# Short description of your app
+
 publish_to: 'none'
+# Prevents publishing this app to pub.dev (since it's private)
+
 version: 1.0.0+1
+# Version format → versionName + buildNumber
+# 1.0.0 = user version, +1 = build version
+
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
+  # Defines Dart SDK version range required for this project
+
 
 dependencies:
   flutter:
     sdk: flutter
+    # Core Flutter SDK
+
   cupertino_icons: ^1.0.6
+  # iOS-style icons
+
   firebase_core: ^3.10.1
+  # Required to initialize Firebase
+
   firebase_auth: ^5.4.1
+  # User authentication (login/signup)
+
   cloud_firestore: ^5.6.1
+  # NoSQL database (store users, products, orders)
+
   firebase_storage: ^12.4.10
+  # Store files like images/videos
+
   cloud_functions: ^5.6.2
+  # Call backend functions (server-side logic)
+
   google_sign_in: ^6.2.2
+  # Google login integration
+
   cached_network_image: ^3.4.1
+  # Loads and caches images from internet (better performance)
+
   google_fonts: ^6.2.1
+  # Use custom fonts easily
+
   provider: ^6.1.2
+  # State management (used for Cart, etc.)
+
   image_picker: ^1.1.2
+  # Pick images from gallery or camera
+
   file_picker: ^8.1.2
+  # Pick files (PDF, docs, etc.)
+
   permission_handler: ^11.3.1
+  # Handle permissions (camera, storage, etc.)
+
   flutter_unity_widget: ^2022.2.0
+  # Integrate Unity (used for AR features)
+
   http: ^1.2.1
+  # Make API calls (backend communication)
+
   camera: ^0.11.0+2
+  # Access device camera
+
   image: ^4.2.0
+  # Image processing (resize, compress, etc.)
+
   path_provider: ^2.1.3
+  # Get file storage paths on device
+
   video_player: ^2.8.1
+  # Play videos
+
   video_thumbnail: ^0.5.6
+  # Generate thumbnails from videos
+
   local_auth: ^2.3.0
+  # Biometric authentication (fingerprint, face)
+
   url_launcher: ^6.3.2
+  # Open URLs (browser, WhatsApp, etc.)
+
   qr_flutter: ^4.1.0
+  # Generate QR codes
+
   intl: ^0.20.2
+  # Date/time formatting (used in orders screen)
+
   flutter_dotenv: ^6.0.0
+  # Load environment variables from .env file
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+    # Used for testing
+
   flutter_lints: ^3.0.0
+  # Code quality rules (linting)
+
 
 flutter:
   uses-material-design: true
+  # Enables Material icons and design system
+
   assets:
     - assets/images/
+    # Folder for images
+
     - assets/icons/
+    # Folder for icons
+
     - .env
+    # Environment file (API keys, secrets)
