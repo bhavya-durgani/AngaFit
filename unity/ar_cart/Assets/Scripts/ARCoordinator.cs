@@ -1,122 +1,110 @@
-using System;
-using System.Collections;
-using System.IO;
-using UnityEngine;
-using UnityEngine.Networking;
-using GLTFast;
+using System; // Basic C# utilities (DateTime, Exception)
+using System.Collections; // For IEnumerator (coroutines)
+using System.IO; // File handling
+using UnityEngine; // Unity engine
+using UnityEngine.Networking; // For downloading files
+using GLTFast; // To load .glb 3D models
 
-/// <summary>
-/// ARCoordinator — Single-file brains for the AngaFit AR Try-On feature.
-///
-/// Responsibilities:
-///   • Download .glb clothing models from a direct URL (or cached file)
-///   • Place the model in front of the camera at a sensible world position
-///   • Handle size scaling (S/M/L/XL) and front/back view toggling
-///   • Report progress & events back to Flutter via FlutterCommunication
-///   • Take screenshots and return the file path to Flutter
-///
-/// Does NOT require body tracking or native Android plugins.
-/// </summary>
+// Main class controlling AR try-on system
 public class ARCoordinator : MonoBehaviour
 {
-    // ── Inspector ───────────────────────────────────────────────────────────
-    [Header("Model Placement")]
-    [Tooltip("Distance in front of the camera where the outfit is placed.")]
-    public float modelDistance = 2.5f;
+    // ───────────── Inspector Variables (Editable in Unity) ─────────────
 
-    [Tooltip("Vertical offset from camera eye level (negative = lower).")]
-    public float modelVerticalOffset = -0.8f;
+    [Header("Model Placement")]
+    public float modelDistance = 2.5f; // Distance from camera
+    public float modelVerticalOffset = -0.8f; // Move model down slightly
 
     [Header("Sizing")]
-    public float[] sizeScales = { 0.90f, 1.00f, 1.10f, 1.22f }; // S, M, L, XL
-    private static readonly string[] SizeLabels = { "S", "M", "L", "XL" };
+    public float[] sizeScales = { 0.90f, 1.00f, 1.10f, 1.22f }; // S, M, L, XL scale
+    private static readonly string[] SizeLabels = { "S", "M", "L", "XL" }; // Labels
 
     [Header("Cache")]
-    public float maxCacheMB = 200f;
+    public float maxCacheMB = 200f; // Max cache size
 
-    // ── Private State ───────────────────────────────────────────────────────
-    private GameObject _activeModel;
-    private Camera     _arCamera;
-    private int        _currentSizeIndex = 1;  // M
-    private bool       _isFrontView = true;
-    private bool       _isDownloading = false;
+    // ───────────── Private Variables ─────────────
 
+    private GameObject _activeModel; // Current model
+    private Camera _arCamera; // Main camera
+    private int _currentSizeIndex = 1; // Default size (M)
+    private bool _isFrontView = true; // Front view toggle
+    private bool _isDownloading = false; // Prevent duplicate downloads
+
+    // Folder paths
     private string CacheDir => Path.Combine(Application.persistentDataPath, "model_cache");
     private string ScreenDir => Path.Combine(Application.persistentDataPath, "screenshots");
 
-    // ── Unity Lifecycle ─────────────────────────────────────────────────────
+    // ───────────── Unity Lifecycle ─────────────
 
     void Awake()
     {
-        Directory.CreateDirectory(CacheDir);
-        Directory.CreateDirectory(ScreenDir);
-        _arCamera = Camera.main;
+        Directory.CreateDirectory(CacheDir); // Create cache folder
+        Directory.CreateDirectory(ScreenDir); // Create screenshot folder
+
+        _arCamera = Camera.main; // Get main camera
+
         if (_arCamera == null)
-            Debug.LogWarning("[ARCoordinator] No main camera found. Model placement may be wrong.");
+            Debug.LogWarning("No main camera found");
     }
 
-    // ── Public API (called by FlutterCommunication) ─────────────────────────
+    // ───────────── Public API (Called from Flutter) ─────────────
 
-    /// <summary>Load a clothing product from a direct glb URL.</summary>
     public void LoadProduct(string modelId, string url)
     {
-        if (_isDownloading)
-        {
-            Debug.LogWarning("[ARCoordinator] Already downloading — ignoring duplicate LoadProduct.");
-            return;
-        }
+        if (_isDownloading) return; // Prevent multiple downloads
+
         if (string.IsNullOrEmpty(url))
         {
-            Debug.LogError("[ARCoordinator] LoadProduct called with empty URL.");
-            FlutterCommunication.SendToFlutter("MODEL_ERROR:empty_url");
+            FlutterCommunication.SendToFlutter("MODEL_ERROR:empty_url"); // Send error
             return;
         }
 
-        StartCoroutine(LoadModelCoroutine(modelId, url));
+        StartCoroutine(LoadModelCoroutine(modelId, url)); // Start loading
     }
 
-    /// <summary>Set size by label: "S", "M", "L", "XL".</summary>
     public void SetSize(string sizeLabel)
     {
-        int idx = Array.IndexOf(SizeLabels, sizeLabel.ToUpper());
-        if (idx < 0) { Debug.LogWarning("[ARCoordinator] Unknown size: " + sizeLabel); return; }
-        _currentSizeIndex = idx;
-        ApplyScaleAndView();
+        int idx = Array.IndexOf(SizeLabels, sizeLabel.ToUpper()); // Find index
+
+        if (idx < 0) return; // Invalid size
+
+        _currentSizeIndex = idx; // Set size
+        ApplyScaleAndView(); // Apply changes
     }
 
-    /// <summary>Toggle front (0°) or back (180°) view.</summary>
     public void SetView(bool isFront)
     {
-        _isFrontView = isFront;
-        ApplyScaleAndView();
+        _isFrontView = isFront; // Set front/back
+        ApplyScaleAndView(); // Apply rotation
     }
 
-    /// <summary>Capture current frame and send path back to Flutter.</summary>
     public void TakeScreenshot()
     {
-        StartCoroutine(ScreenshotCoroutine());
+        StartCoroutine(ScreenshotCoroutine()); // Start screenshot
     }
 
-    /// <summary>Clear the local model cache.</summary>
     public void ClearCache()
     {
-        if (_isDownloading) { Debug.LogWarning("[ARCoordinator] Cannot clear cache while downloading."); return; }
-        if (Directory.Exists(CacheDir)) { Directory.Delete(CacheDir, true); Directory.CreateDirectory(CacheDir); }
-        FlutterCommunication.SendToFlutter("CACHE_CLEARED");
+        if (_isDownloading) return; // Prevent during download
+
+        if (Directory.Exists(CacheDir))
+        {
+            Directory.Delete(CacheDir, true); // Delete cache
+            Directory.CreateDirectory(CacheDir); // Recreate
+        }
+
+        FlutterCommunication.SendToFlutter("CACHE_CLEARED"); // Notify Flutter
     }
 
-    // ── Model Loading ────────────────────────────────────────────────────────
+    // ───────────── Model Loading ─────────────
 
     private IEnumerator LoadModelCoroutine(string modelId, string url)
     {
-        _isDownloading = true;
-        string cachePath = Path.Combine(CacheDir, SanitizeFileName(modelId) + ".glb");
+        _isDownloading = true; // Mark downloading
 
-        // Check cache
-        if (File.Exists(cachePath) && new FileInfo(cachePath).Length > 0)
+        string cachePath = Path.Combine(CacheDir, modelId + ".glb"); // File path
+
+        if (File.Exists(cachePath)) // Check cache
         {
-            Debug.Log("[ARCoordinator] Cache hit: " + cachePath);
-            FlutterCommunication.SendToFlutter("DOWNLOAD_PROGRESS:1.0");
             yield return StartCoroutine(InstantiateFromFile(modelId, cachePath));
         }
         else
@@ -124,88 +112,60 @@ public class ARCoordinator : MonoBehaviour
             yield return StartCoroutine(DownloadModel(modelId, url, cachePath));
         }
 
-        _isDownloading = false;
+        _isDownloading = false; // Done
     }
 
     private IEnumerator DownloadModel(string modelId, string url, string cachePath)
     {
-        Debug.Log("[ARCoordinator] Downloading: " + url);
-
         using (var req = new UnityWebRequest(url, UnityWebRequest.kHttpVerbGET))
         {
-            req.downloadHandler = new DownloadHandlerFile(cachePath);
-            req.timeout = 120;
+            req.downloadHandler = new DownloadHandlerFile(cachePath); // Save file
             req.SendWebRequest();
 
             while (!req.isDone)
             {
-                FlutterCommunication.SendToFlutter($"DOWNLOAD_PROGRESS:{req.downloadProgress:F2}");
-                yield return null;
+                FlutterCommunication.SendToFlutter($"DOWNLOAD_PROGRESS:{req.downloadProgress}");
+                yield return null; // Wait
             }
 
             if (req.result != UnityWebRequest.Result.Success)
             {
-                if (File.Exists(cachePath)) File.Delete(cachePath);
-                Debug.LogError("[ARCoordinator] Download failed: " + req.error);
-                FlutterCommunication.SendToFlutter("MODEL_ERROR:" + req.error);
-                yield break;
-            }
-
-            var fi = new FileInfo(cachePath);
-            if (fi.Length == 0)
-            {
-                File.Delete(cachePath);
-                FlutterCommunication.SendToFlutter("MODEL_ERROR:empty_download");
+                FlutterCommunication.SendToFlutter("MODEL_ERROR");
                 yield break;
             }
         }
 
-        FlutterCommunication.SendToFlutter("DOWNLOAD_PROGRESS:1.0");
         yield return StartCoroutine(InstantiateFromFile(modelId, cachePath));
     }
 
     private IEnumerator InstantiateFromFile(string modelId, string filePath)
     {
-        if (!File.Exists(filePath))
-        {
-            FlutterCommunication.SendToFlutter("MODEL_ERROR:file_not_found");
-            yield break;
-        }
+        var gltf = new GltfImport(); // Create loader
 
-        var gltf = new GltfImport();
-        var loadTask = gltf.Load("file://" + filePath);
+        var loadTask = gltf.Load("file://" + filePath); // Load file
         yield return new WaitUntil(() => loadTask.IsCompleted);
 
         if (!loadTask.Result)
         {
-            File.Delete(filePath); // Delete corrupt cache entry
             FlutterCommunication.SendToFlutter("MODEL_ERROR:parse_failed");
             yield break;
         }
 
-        // Destroy previous model
-        if (_activeModel != null) { Destroy(_activeModel); _activeModel = null; }
+        if (_activeModel != null)
+            Destroy(_activeModel); // Remove old model
 
-        _activeModel = new GameObject("Outfit_" + modelId);
+        _activeModel = new GameObject("Outfit_" + modelId); // Create object
+
         var instantiateTask = gltf.InstantiateMainSceneAsync(_activeModel.transform);
         yield return new WaitUntil(() => instantiateTask.IsCompleted);
 
-        if (!instantiateTask.Result)
-        {
-            Destroy(_activeModel);
-            _activeModel = null;
-            FlutterCommunication.SendToFlutter("MODEL_ERROR:instantiate_failed");
-            yield break;
-        }
+        PlaceModelInView(); // Position model
+        ApplyScaleAndView(); // Apply scale + rotation
 
-        PlaceModelInView();
-        ApplyScaleAndView();
-
-        FlutterCommunication.SendToFlutter("OUTFIT_APPLIED");
-        Debug.Log("[ARCoordinator] Outfit applied: " + modelId);
+        FlutterCommunication.SendToFlutter("OUTFIT_APPLIED"); // Notify Flutter
     }
 
-    // ── Model Positioning ────────────────────────────────────────────────────
+    // ───────────── Model Positioning ─────────────
 
     private void PlaceModelInView()
     {
@@ -213,18 +173,17 @@ public class ARCoordinator : MonoBehaviour
 
         if (_arCamera != null)
         {
-            Vector3 camPos = _arCamera.transform.position;
-            Vector3 forward = Vector3.ProjectOnPlane(_arCamera.transform.forward, Vector3.up).normalized;
-            _activeModel.transform.position = camPos
-                + forward * modelDistance
-                + Vector3.up * modelVerticalOffset;
-            _activeModel.transform.rotation = Quaternion.LookRotation(-forward, Vector3.up);
+            Vector3 camPos = _arCamera.transform.position; // Camera position
+            Vector3 forward = Vector3.ProjectOnPlane(_arCamera.transform.forward, Vector3.up);
+
+            _activeModel.transform.position =
+                camPos + forward * modelDistance + Vector3.up * modelVerticalOffset;
+
+            _activeModel.transform.rotation = Quaternion.LookRotation(-forward);
         }
         else
         {
-            // Fallback: place at scene origin
-            _activeModel.transform.position = new Vector3(0, -0.8f, 2.5f);
-            _activeModel.transform.rotation = Quaternion.identity;
+            _activeModel.transform.position = new Vector3(0, -0.8f, 2.5f); // Default
         }
     }
 
@@ -233,69 +192,40 @@ public class ARCoordinator : MonoBehaviour
         if (_activeModel == null) return;
 
         float scale = sizeScales[Mathf.Clamp(_currentSizeIndex, 0, sizeScales.Length - 1)];
-        _activeModel.transform.localScale = Vector3.one * scale;
+        _activeModel.transform.localScale = Vector3.one * scale; // Apply size
 
-        // Rotate for front/back view
         Vector3 euler = _activeModel.transform.eulerAngles;
-        euler.y = _isFrontView ? 0f : 180f;
+        euler.y = _isFrontView ? 0f : 180f; // Rotate front/back
         _activeModel.transform.eulerAngles = euler;
     }
 
-    // ── Screenshot ───────────────────────────────────────────────────────────
+    // ───────────── Screenshot ─────────────
 
     private IEnumerator ScreenshotCoroutine()
     {
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame(); // Wait for frame render
 
-        string filePath = Path.Combine(ScreenDir,
-            "angafit_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png");
+        string filePath = Path.Combine(ScreenDir, "angafit_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png");
 
-        Texture2D tex = null;
-        try
-        {
-            tex = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
-            tex.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
-            tex.Apply();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError("[ARCoordinator] Screenshot ReadPixels failed: " + ex.Message);
-            if (tex != null) Destroy(tex);
-            FlutterCommunication.SendToFlutter("SCREENSHOT_ERROR:read_pixels_failed");
-            yield break;
-        }
+        Texture2D tex = new Texture2D(Screen.width, Screen.height);
+        tex.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0);
+        tex.Apply();
 
-        byte[] bytes = tex.EncodeToPNG();
+        byte[] bytes = tex.EncodeToPNG(); // Convert to PNG
         Destroy(tex);
 
-        bool ok = false;
-        string err = null;
-        var thread = new System.Threading.Thread(() =>
-        {
-            try { File.WriteAllBytes(filePath, bytes); ok = true; }
-            catch (Exception ex) { err = ex.Message; }
-        });
-        thread.Start();
-        yield return new WaitUntil(() => !thread.IsAlive);
+        File.WriteAllBytes(filePath, bytes); // Save file
 
-        if (ok)
-        {
-            Debug.Log("[ARCoordinator] Screenshot saved: " + filePath);
-            FlutterCommunication.SendToFlutter("SCREENSHOT:" + filePath);
-        }
-        else
-        {
-            Debug.LogError("[ARCoordinator] Screenshot write failed: " + err);
-            FlutterCommunication.SendToFlutter("SCREENSHOT_ERROR:write_failed");
-        }
+        FlutterCommunication.SendToFlutter("SCREENSHOT:" + filePath); // Send path
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    // ───────────── Helper ─────────────
 
     private static string SanitizeFileName(string name)
     {
         foreach (char c in Path.GetInvalidFileNameChars())
-            name = name.Replace(c, '_');
+            name = name.Replace(c, '_'); // Replace invalid chars
+
         return name;
     }
 }
