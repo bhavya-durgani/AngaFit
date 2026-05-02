@@ -1,126 +1,156 @@
-using UnityEngine;
-using FlutterUnityIntegration;
+using UnityEngine;                         // Core Unity library
+using FlutterUnityIntegration;            // Package to communicate with Flutter
 
 /// <summary>
-/// FlutterCommunication — Routes postMessage calls from Flutter to ARCoordinator.
-///
-/// Flutter calls:
-///   controller.postMessage('FlutterComm', 'LoadProduct', '{"id":"shirt_001","url":"https://..."}')
-///   controller.postMessage('FlutterComm', 'SetSize',      'L')
-///   controller.postMessage('FlutterComm', 'SetView',      'back')
-///   controller.postMessage('FlutterComm', 'TakeScreenshot', '')
-///   controller.postMessage('FlutterComm', 'ClearCache',   '')
-///
-/// IMPORTANT: The GameObject this script is attached to MUST be named exactly "FlutterComm".
+/// FlutterCommunication — Acts as a bridge between Flutter and Unity.
+/// Receives messages from Flutter and sends responses back.
 /// </summary>
+
 public class FlutterCommunication : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private ARCoordinator coordinator;
+    // ── REFERENCES ─────────────────────────────────────────
 
-    // Singleton — allows any script to call SendToFlutter() statically
+    [Header("References")]                 // Inspector section label
+
+    [SerializeField] 
+    private ARCoordinator coordinator;    // Reference to ARCoordinator script
+
+    // Singleton instance (only one object should exist)
     private static FlutterCommunication _instance;
+
+    // ── UNITY LIFECYCLE ───────────────────────────────────
 
     void Awake()
     {
+        // If another instance already exists → destroy this one
         if (_instance != null && _instance != this)
         {
             Debug.LogWarning("[FlutterComm] Duplicate instance destroyed.");
             Destroy(gameObject);
             return;
         }
-        _instance = this;
 
+        _instance = this; // Assign singleton
+
+        // Check if ARCoordinator is connected
         if (coordinator == null)
-            Debug.LogError("[FlutterComm] ARCoordinator reference is not assigned!");
+            Debug.LogError("[FlutterComm] ARCoordinator not assigned!");
 
+        // IMPORTANT: GameObject name must match Flutter postMessage target
         if (gameObject.name != "FlutterComm")
-            Debug.LogError($"[FlutterComm] GameObject must be named 'FlutterComm' but is '{gameObject.name}'. Flutter messages will NOT be received!");
+            Debug.LogError($"[FlutterComm] GameObject must be named 'FlutterComm'!");
     }
 
     void OnDestroy()
     {
+        // Reset instance when object is destroyed
         if (_instance == this) _instance = null;
     }
 
-    // ── Incoming: Flutter → Unity ────────────────────────────────────────────
+    // ── INCOMING: FLUTTER → UNITY ─────────────────────────
 
-    /// <summary>Flutter: postMessage('FlutterComm', 'LoadProduct', '{"id":"...","url":"..."}')</summary>
+    /// Flutter calls this:
+    /// postMessage('FlutterComm', 'LoadProduct', '{"id":"...","url":"..."}')
     public void LoadProduct(string json)
     {
         try
         {
+            // Convert JSON string to object
             var data = JsonUtility.FromJson<LoadProductPayload>(json);
+
+            // Validate URL
             if (string.IsNullOrEmpty(data.url))
             {
-                Debug.LogError("[FlutterComm] LoadProduct: missing 'url' in payload.");
+                Debug.LogError("[FlutterComm] Missing URL.");
                 SendToFlutter("MODEL_ERROR:missing_url");
                 return;
             }
-            Debug.Log($"[FlutterComm] LoadProduct: id={data.id} url={data.url}");
+
+            Debug.Log($"[FlutterComm] LoadProduct: {data.id}");
+
+            // Call ARCoordinator to load model
             coordinator.LoadProduct(data.id ?? "unknown", data.url);
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("[FlutterComm] LoadProduct parse error: " + ex.Message);
+            Debug.LogError("[FlutterComm] JSON parse error: " + ex.Message);
             SendToFlutter("MODEL_ERROR:parse_failed");
         }
     }
 
-    /// <summary>Flutter: postMessage('FlutterComm', 'SetSize', 'M')</summary>
+    /// Flutter: postMessage('FlutterComm', 'SetSize', 'M')
     public void SetSize(string sizeLabel)
     {
-        if (string.IsNullOrEmpty(sizeLabel)) { Debug.LogWarning("[FlutterComm] SetSize: empty label."); return; }
+        if (string.IsNullOrEmpty(sizeLabel))
+        {
+            Debug.LogWarning("[FlutterComm] Empty size.");
+            return;
+        }
+
         Debug.Log("[FlutterComm] SetSize: " + sizeLabel);
+
+        // Pass size to ARCoordinator
         coordinator.SetSize(sizeLabel);
     }
 
-    /// <summary>Flutter: postMessage('FlutterComm', 'SetView', 'front') or 'back'</summary>
+    /// Flutter: postMessage('FlutterComm', 'SetView', 'front/back')
     public void SetView(string view)
     {
+        // Convert string → boolean
         bool isFront = view.Trim().ToLower() != "back";
+
         Debug.Log("[FlutterComm] SetView: " + (isFront ? "front" : "back"));
+
+        // Pass view to ARCoordinator
         coordinator.SetView(isFront);
     }
 
-    /// <summary>Flutter: postMessage('FlutterComm', 'TakeScreenshot', '')</summary>
+    /// Flutter: postMessage('FlutterComm', 'TakeScreenshot', '')
     public void TakeScreenshot(string _)
     {
-        Debug.Log("[FlutterComm] TakeScreenshot requested.");
+        Debug.Log("[FlutterComm] Screenshot requested.");
+
+        // Call ARCoordinator screenshot
         coordinator.TakeScreenshot();
     }
 
-    /// <summary>Flutter: postMessage('FlutterComm', 'ClearCache', '')</summary>
+    /// Flutter: postMessage('FlutterComm', 'ClearCache', '')
     public void ClearCache(string _)
     {
-        coordinator.ClearCache();
+        coordinator.ClearCache(); // Clear stored models
     }
 
-    // ── Outgoing: Unity → Flutter ────────────────────────────────────────────
+    // ── OUTGOING: UNITY → FLUTTER ─────────────────────────
 
-    /// <summary>Send a plain-string message back to Flutter.</summary>
+    /// Send message back to Flutter
     public static void SendToFlutter(string message)
     {
+        // If no instance exists → fail
         if (_instance == null)
         {
-            Debug.LogWarning("[FlutterComm] No instance — cannot send: " + message);
+            Debug.LogWarning("[FlutterComm] No instance.");
             return;
         }
+
+        // If communication system not ready
         if (UnityMessageManager.Instance == null)
         {
-            Debug.LogWarning("[FlutterComm] UnityMessageManager not ready — cannot send: " + message);
+            Debug.LogWarning("[FlutterComm] MessageManager not ready.");
             return;
         }
-        Debug.Log("[FlutterComm → Flutter] " + message);
+
+        Debug.Log("[Unity → Flutter] " + message);
+
+        // Send message to Flutter
         UnityMessageManager.Instance.SendMessageToFlutter(message);
     }
 
-    // ── Data Types ───────────────────────────────────────────────────────────
+    // ── DATA CLASS ────────────────────────────────────────
 
     [System.Serializable]
     private class LoadProductPayload
     {
-        public string id;
-        public string url;
+        public string id;   // Product ID
+        public string url;  // Model URL (.glb file)
     }
 }
